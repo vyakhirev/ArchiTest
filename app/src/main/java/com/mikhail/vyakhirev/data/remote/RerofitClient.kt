@@ -4,9 +4,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.mikhail.vyakhirev.SharedPrefsUtil
 import com.mikhail.vyakhirev.utils.BASE_URL
+import com.mikhail.vyakhirev.utils.FLICKR_API_KEY
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,7 +16,21 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitClient(prefsUtil: SharedPrefsUtil){
 
-    private val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    private val loggerInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+    private val authInterceptor = Interceptor { chain ->
+        val newUrl = chain.request().url
+            .newBuilder()
+            .addQueryParameter("api_key", FLICKR_API_KEY)
+            .build()
+
+        val newRequest = chain.request()
+            .newBuilder()
+            .url(newUrl)
+            .build()
+
+        chain.proceed(newRequest)
+    }
 
     private val okHttpClient = OkHttpClient.Builder()
         .cookieJar(object : CookieJar {
@@ -29,7 +45,8 @@ class RetrofitClient(prefsUtil: SharedPrefsUtil){
                 return prefsUtil.loadCookies()
             }
         })
-        .addInterceptor(logger)
+        .addInterceptor(authInterceptor)
+        .addInterceptor(loggerInterceptor)
         .build()
 
     var gson: Gson = GsonBuilder()
@@ -37,7 +54,7 @@ class RetrofitClient(prefsUtil: SharedPrefsUtil){
         .create()
 
     val api: Api = Retrofit.Builder()
-        .baseUrl("https://$BASE_URL/api/")
+        .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()

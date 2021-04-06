@@ -2,21 +2,21 @@ package com.mikhail.vyakhirev.presentation.main_activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.mikhail.vyakhirev.data.Repository
+import com.mikhail.vyakhirev.data.IRepository
 
-class MainActivityViewModel(private val repository: Repository) : ViewModel()  {
+class MainActivityViewModel(private val repository: IRepository) : ViewModel()  {
     fun kan(){
         repository.toString()
     }
 }
 @Suppress("UNCHECKED_CAST")
 class MainActivityViewModelFactory(
-    private val repository: Repository
+    private val IRepository: IRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return MainActivityViewModel(
-            repository
+            IRepository
         ) as T
     }
 
