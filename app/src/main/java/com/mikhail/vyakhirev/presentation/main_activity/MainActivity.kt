@@ -1,19 +1,26 @@
 package com.mikhail.vyakhirev.presentation.main_activity
 
 import android.os.Bundle
-import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.databinding.ActivityMainBinding
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import com.mikhail.vyakhirev.presentation.list_fragment.ListMyFragment
+import org.kodein.di.Copy
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.android.di
+import org.kodein.di.android.retainedSubDI
+import org.kodein.di.instance
 
-class MainActivity : AppCompatActivity(), KodeinAware {
-    override val kodein by kodein()
+class MainActivity : AppCompatActivity(), DIAware {
+//    override val di by di()
+override val di by retainedSubDI(closestDI(), copy = Copy.All) {
+}
     private val factory by instance<MainActivityViewModelFactory>()
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
@@ -23,39 +30,26 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
 
-        binding =
-            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-                .apply {
-                    this.viewmodel = viewModel
-                    this.lifecycleOwner = this@MainActivity
-                }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        val bottomNavigation: BottomNavigationView = binding.bottomNav
-        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-//        setSupportActionBar(binding.toolbar)
-
+        binding.bottomNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
 
-
-    private val mOnNavigationItemSelectedListener =
+    private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener {
 //            val nav_Controller = findNavController(R.id.nav_host_fragment)
             when (it.itemId) {
-
                 R.id.action_list -> {
-//                    listPhotoMediator.openListPhotoScreen(
-//                        R.id.fragmentContainer,
-//                        supportFragmentManager
-//                    )
+                    openFragment(ListMyFragment())
+//                    openFragment(ListMyFragment())
+                    Toast.makeText(this, "Kan!", Toast.LENGTH_SHORT).show()
+
                     return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_favoritesPhoto -> {
-//                    favoritesPhotoMediator.openFavoritesPhotoScreen(
-//                        R.id.fragmentContainer,
-//                        supportFragmentManager
-//                    )
                     return@OnNavigationItemSelectedListener true
                 }
 
@@ -68,13 +62,20 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             false
         }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        return when (item.itemId) {
+//            R.id.action_settings -> true
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
+
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragmentContainer, fragment)
+        transaction.commit()
     }
+
 }

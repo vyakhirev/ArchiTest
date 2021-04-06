@@ -5,12 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mikhail.vyakhirev.data.model.PhotoItem
 import com.mikhail.vyakhirev.databinding.ListRowBinding
-import com.mikhail.vyakhirev.presentation.list_fragment.ListViewModel
+import com.mikhail.vyakhirev.presentation.list_fragment.ListFragmentViewModel
 
 
 class ListAdapter (
-    private val viewModel: ListViewModel,
-    private var items: MutableList<PhotoItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+    private var items: List<PhotoItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListRowBinding.inflate(inflater, parent, false)
@@ -18,11 +17,16 @@ class ListAdapter (
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        if (holder is ListViewHolder)
+            holder.bind(items[position])
     }
 
     override fun getItemCount()= items.size
 
+    fun updateItems(newItems:List<PhotoItem>){
+       items=newItems
+       notifyDataSetChanged()
+    }
 
 }
 //RecyclerView.Adapter<ProductListAdapter.ProductViewHolder>() {
