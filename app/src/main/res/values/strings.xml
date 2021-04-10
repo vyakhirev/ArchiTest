@@ -14,4 +14,9 @@
     <string name="search">Search</string>
     <string name="starr_off">Starr off</string>
     <string name="photo">Photo</string>
+    <string name="retry">Retry</string>
+    <string name="no_results">No results</string>
+    <string name="favorites_tag">Favorites fragment</string>
+    <string name="settings_fragment_tag">Settings fragment</string>
+    <string name="detail_fragment_tag">Detail fragment</string>
 </resources>

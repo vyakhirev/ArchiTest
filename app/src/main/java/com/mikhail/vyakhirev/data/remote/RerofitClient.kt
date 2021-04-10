@@ -5,18 +5,15 @@ import com.google.gson.GsonBuilder
 import com.mikhail.vyakhirev.SharedPrefsUtil
 import com.mikhail.vyakhirev.utils.BASE_URL
 import com.mikhail.vyakhirev.utils.FLICKR_API_KEY
-import okhttp3.Cookie
-import okhttp3.CookieJar
-import okhttp3.HttpUrl
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitClient(prefsUtil: SharedPrefsUtil){
+class RetrofitClient(prefsUtil: SharedPrefsUtil) {
 
-    private val loggerInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    private val loggerInterceptor =
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
     private val authInterceptor = Interceptor { chain ->
         val newUrl = chain.request().url

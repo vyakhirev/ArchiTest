@@ -1,32 +1,75 @@
 package com.mikhail.vyakhirev.presentation.adapters
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.mikhail.vyakhirev.data.model.PhotoItem
-import com.mikhail.vyakhirev.databinding.ListRowBinding
-import com.mikhail.vyakhirev.presentation.list_fragment.ListFragmentViewModel
+import com.mikhail.vyakhirev.R
 
 
-class ListAdapter (
-    private var items: List<PhotoItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = ListRowBinding.inflate(inflater, parent, false)
-        return ListViewHolder(binding.root)
+class ListAdapter(
+//    private var items: List<PhotoItem>
+) : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(COMPARATOR) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == R.layout.list_row) {
+            ListViewHolder.create(parent)
+        } else {
+            SeparatorViewHolder.create(parent)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is UiModel.Photo -> R.layout.list_row
+            is UiModel.SeparatorItem -> R.layout.separator_view_item
+            null -> throw UnsupportedOperationException("Unknown view")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ListViewHolder)
-            holder.bind(items[position])
+        val uiModel = getItem(position)
+        uiModel.let {
+            when (uiModel) {
+                is UiModel.Photo -> (holder as ListViewHolder).bind(uiModel.photoItem)
+                is UiModel.SeparatorItem -> (holder as SeparatorViewHolder).bind(uiModel.description)
+            }
+        }
     }
 
-    override fun getItemCount()= items.size
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
+//        val inflater = LayoutInflater.from(parent.context)
+//        val binding = ListRowBinding.inflate(inflater, parent, false)
+//        return ListViewHolder(binding.root)
+//    }
+//
+//    override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
+//        val item = getItem(position)
+//        if (holder is ListViewHolder && item != null)
+//            holder.bind(item)
+//    }
 
-    fun updateItems(newItems:List<PhotoItem>){
-       items=newItems
-       notifyDataSetChanged()
+//    override fun getItemCount()= items.size
+
+//    fun updateItems(newItems:List<PhotoItem>){
+//       items=newItems
+//       notifyDataSetChanged()
+//    }
+
+    companion object {
+        private val COMPARATOR = object : DiffUtil.ItemCallback<UiModel>() {
+            override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
+                return (oldItem is UiModel.Photo && newItem is UiModel.Photo &&
+                        oldItem.photoItem.id == newItem.photoItem.id) ||
+                        (oldItem is UiModel.SeparatorItem && newItem is UiModel.SeparatorItem &&
+                                oldItem.description == newItem.description)
+            }
+
+            override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean =
+                oldItem == newItem
+        }
     }
+
 
 }
 //RecyclerView.Adapter<ProductListAdapter.ProductViewHolder>() {

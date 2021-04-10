@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@id/listMyFragment">
+
+    <fragment
+        android:id="@+id/listMyFragment"
+        android:name="com.mikhail.vyakhirev.presentation.list_fragment.ListMyFragment"
+        android:label="ListMyFragment" >
+        <action
+            android:id="@+id/action_listMyFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_listMyFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_listMyFragment_self"
+            app:destination="@id/listMyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.mikhail.vyakhirev.presentation.detail_fragment.DetailFragment"
+        android:label="detail_fragment"
+        tools:layout="@layout/detail_fragment" >
+        <action
+            android:id="@+id/action_detailFragment_to_listMyFragment"
+            app:destination="@id/listMyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.mikhail.vyakhirev.presentation.favorites_fragment.FavoritesFragment"
+        android:label="FavoritesFragment" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_listMyFragment"
+            app:destination="@id/listMyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mikhail.vyakhirev.presentation.settings_fragment.SettingsFragment"
+        android:label="SettingsFragment" />
+</navigation>

@@ -1,7 +1,9 @@
 package com.mikhail.vyakhirev.presentation.adapters
 
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -39,5 +41,11 @@ class ListViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
                 .into(this)
         }
     }
-
+    companion object {
+        fun create(parent: ViewGroup): ListViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_row, parent, false)
+            return ListViewHolder(view)
+        }
+    }
 }
