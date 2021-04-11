@@ -11,6 +11,7 @@ import com.mikhail.vyakhirev.databinding.SettingsFragmentBinding
 import com.mikhail.vyakhirev.presentation.adapters.ListAdapter
 import com.mikhail.vyakhirev.presentation.favorites_fragment.FavoritesViewModel
 import com.mikhail.vyakhirev.presentation.favorites_fragment.FavoritesViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -18,10 +19,11 @@ import org.kodein.di.android.subDI
 import org.kodein.di.android.x.closestDI
 import org.kodein.di.instance
 
-class SettingsFragment : Fragment(), DIAware {
+@AndroidEntryPoint
+class SettingsFragment : Fragment(){
 
-    private val factory by instance<SettingsViewModelFactory>()
-    override val di: DI by subDI(closestDI()) {}
+//    private val factory by instance<SettingsViewModelFactory>()
+//    override val di: DI by subDI(closestDI()) {}
     private lateinit var viewModel: SettingsViewModel
     private lateinit var adapter: ListAdapter
 
@@ -38,7 +40,7 @@ class SettingsFragment : Fragment(), DIAware {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
+//        viewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
         _binding = SettingsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }

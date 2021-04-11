@@ -10,17 +10,19 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 import org.kodein.di.Copy
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.android.retainedSubDI
 import org.kodein.di.instance
 
-class MainActivity : AppCompatActivity(), DIAware {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
     //    override val di by di()
-    override val di by retainedSubDI(closestDI(), copy = Copy.All) {
-    }
-    private val factory by instance<MainActivityViewModelFactory>()
+//    override val di by retainedSubDI(closestDI(), copy = Copy.All) {
+//    }
+//    private val factory by instance<MainActivityViewModelFactory>()
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity(), DIAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
+//        viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root

@@ -6,12 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import com.mikhail.vyakhirev.databinding.FavoritesFragmentBinding
-import com.mikhail.vyakhirev.databinding.ListFragmentBinding
 import com.mikhail.vyakhirev.presentation.adapters.ListAdapter
-import com.mikhail.vyakhirev.presentation.list_fragment.ListFragmentViewModel
-import com.mikhail.vyakhirev.presentation.list_fragment.ListFragmentViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -19,10 +16,11 @@ import org.kodein.di.android.subDI
 import org.kodein.di.android.x.closestDI
 import org.kodein.di.instance
 
-class FavoritesFragment : Fragment(), DIAware {
+@AndroidEntryPoint
+class FavoritesFragment : Fragment() {
 
-    private val factory by instance<FavoritesViewModelFactory>()
-    override val di: DI by subDI(closestDI()) {}
+//    private val factory by instance<FavoritesViewModelFactory>()
+//    override val di: DI by subDI(closestDI()) {}
     private lateinit var viewModel: FavoritesViewModel
     private lateinit var adapter: ListAdapter
 
@@ -39,7 +37,7 @@ class FavoritesFragment : Fragment(), DIAware {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this, factory).get(FavoritesViewModel::class.java)
+//        viewModel = ViewModelProvider(this, factory).get(FavoritesViewModel::class.java)
         _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }

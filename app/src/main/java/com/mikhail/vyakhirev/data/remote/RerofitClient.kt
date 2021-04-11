@@ -9,8 +9,11 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class RetrofitClient(prefsUtil: SharedPrefsUtil) {
+class RetrofitClient  @Inject constructor(
+    prefsUtil: SharedPrefsUtil
+) {
 
     private val loggerInterceptor =
         HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)

@@ -5,11 +5,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mikhail.vyakhirev.R
+import com.mikhail.vyakhirev.utils.DiffUtilCallBack
 
 
 class ListAdapter(
 //    private var items: List<PhotoItem>
-) : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(COMPARATOR) {
+) : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(DiffUtilCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == R.layout.list_row) {
@@ -56,19 +57,19 @@ class ListAdapter(
 //       notifyDataSetChanged()
 //    }
 
-    companion object {
-        private val COMPARATOR = object : DiffUtil.ItemCallback<UiModel>() {
-            override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
-                return (oldItem is UiModel.Photo && newItem is UiModel.Photo &&
-                        oldItem.photoItem.id == newItem.photoItem.id) ||
-                        (oldItem is UiModel.SeparatorItem && newItem is UiModel.SeparatorItem &&
-                                oldItem.description == newItem.description)
-            }
-
-            override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean =
-                oldItem == newItem
-        }
-    }
+//    companion object {
+//        private val COMPARATOR = object : DiffUtil.ItemCallback<UiModel>() {
+//            override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
+//                return (oldItem is UiModel.Photo && newItem is UiModel.Photo &&
+//                        oldItem.photoItem.id == newItem.photoItem.id) ||
+//                        (oldItem is UiModel.SeparatorItem && newItem is UiModel.SeparatorItem &&
+//                                oldItem.description == newItem.description)
+//            }
+//
+//            override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean =
+//                oldItem == newItem
+//        }
+//    }
 
 
 }

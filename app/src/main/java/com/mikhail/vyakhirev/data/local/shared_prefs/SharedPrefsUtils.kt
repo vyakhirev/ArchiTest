@@ -3,10 +3,12 @@ package com.mikhail.vyakhirev
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Cookie
 import java.lang.Exception
+import javax.inject.Inject
 
-class SharedPrefsUtil(context: Context) {
+class SharedPrefsUtil @Inject constructor(@ApplicationContext context: Context) {
 
     private val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 

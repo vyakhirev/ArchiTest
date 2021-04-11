@@ -10,8 +10,9 @@ import com.mikhail.vyakhirev.data.model.PhotoItem
 import com.mikhail.vyakhirev.data.remote.RetrofitClient
 import com.mikhail.vyakhirev.utils.NETWORK_PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class Repository(
+class Repository @Inject constructor(
     private val retrofit: RetrofitClient,
     private val prefs: SharedPrefsUtil,
     private val db: AppDatabase

@@ -1,15 +1,16 @@
 package com.mikhail.vyakhirev.utils
 
 import androidx.recyclerview.widget.DiffUtil
+import com.mikhail.vyakhirev.presentation.adapters.UiModel
 
-//class DiffUtilCallBack : DiffUtil.ItemCallback<RedditPost>() {
-//override fun areItemsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean {
-//    return oldItem.key == newItem.key
-//}
-//
-//override fun areContentsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean {
-//    return oldItem.title == newItem.title
-//            && oldItem.score == newItem.score
-//            && oldItem.commentCount == newItem.commentCount
-//}
-//}
+class DiffUtilCallBack : DiffUtil.ItemCallback<UiModel>() {
+    override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
+        return (oldItem is UiModel.Photo && newItem is UiModel.Photo &&
+                oldItem.photoItem.id == newItem.photoItem.id) ||
+                (oldItem is UiModel.SeparatorItem && newItem is UiModel.SeparatorItem &&
+                        oldItem.description == newItem.description)
+    }
+
+    override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean =
+        oldItem == newItem
+}
