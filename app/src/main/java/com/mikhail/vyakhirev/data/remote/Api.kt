@@ -23,6 +23,6 @@ suspend fun getPhotoSearch(
         @Query("per_page") perPage: Int,
         @Query("nojsoncallback") noJsonCallback: String = "nojsoncallback",
         @Query("format") format: String = "json"
-    ): Deferred<Response<ResponsePhotoItemHolder>>
+    ): ResponsePhotoItemHolder
 
 }

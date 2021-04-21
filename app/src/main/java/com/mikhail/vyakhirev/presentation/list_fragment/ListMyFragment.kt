@@ -22,40 +22,28 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ListMyFragment : Fragment() {
 
-    //    private lateinit var viewModel: ListFragmentViewModel
     private val viewModel: ListFragmentViewModel by viewModels()
     private lateinit var adapter: ListAdapter
-    private var _binding: ListFragmentBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
+    private var listFragmentBinding: ListFragmentBinding? = null
     private var getFavoritesJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        viewModel = ViewModelProvider(this, factory).get(ListFragmentViewModel::class.java)
-        _binding = ListFragmentBinding.inflate(inflater, container, false)
+        val binding = ListFragmentBinding.inflate(inflater, container, false)
+        listFragmentBinding = binding
+        initAdapter(binding)
+        getFavorites()
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        listFragmentBinding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initAdapter()
-        getFavorites()
-
-    }
-
-    private fun showEmptyList(show: Boolean) {
+    private fun showEmptyList(show: Boolean, binding: ListFragmentBinding) {
         if (show) {
             binding.emptyList.visibility = View.VISIBLE
             binding.listPhotoRv.visibility = View.GONE
@@ -75,11 +63,15 @@ class ListMyFragment : Fragment() {
         }
     }
 
-    private fun initAdapter() {
+    private fun initAdapter(binding: ListFragmentBinding) {
 
-        adapter = ListAdapter()
+        adapter = ListAdapter(bigPhotoClickListener = {
+            viewModel.favoriteSwitcher(it)
+        }, posListener = {
+            adapter.notifyItemChanged(it)
+        })
+
         binding.listPhotoRv.layoutManager = GridLayoutManager(context, 2)
-//        binding.listPhotoRv.adapter = adapter
 
         binding.listPhotoRv.adapter = adapter.withLoadStateHeaderAndFooter(
             header = MyLoadStateAdapter { adapter.retry() },
@@ -89,7 +81,7 @@ class ListMyFragment : Fragment() {
 
             // show empty list
             val isListEmpty = loadState.refresh is LoadState.NotLoading && adapter.itemCount == 0
-            showEmptyList(isListEmpty)
+            showEmptyList(isListEmpty, binding)
 
             // Only show the list if refresh succeeds.
             binding.listPhotoRv.isVisible = loadState.mediator?.refresh is LoadState.NotLoading
@@ -105,7 +97,7 @@ class ListMyFragment : Fragment() {
             errorState?.let {
                 Toast.makeText(
                     requireContext(),
-                    "\uD83D\uDE28 Wooops ${it.error}",
+                    "\uD83D\uDE28 Oops ${it.error}",
                     Toast.LENGTH_LONG
                 ).show()
             }

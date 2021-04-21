@@ -1,21 +1,28 @@
 package com.mikhail.vyakhirev.data
 
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadType
+import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.mikhail.vyakhirev.data.local.db.AppDatabase
 import com.mikhail.vyakhirev.data.local.db.RemoteKeys
 import com.mikhail.vyakhirev.data.model.PhotoItem
+import com.mikhail.vyakhirev.data.model.ResponsePhotoItemHolder
 import com.mikhail.vyakhirev.data.remote.Api
 import com.mikhail.vyakhirev.utils.STARTING_PAGE_INDEX
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class FlickrRemoteMediator(
+class FlickrRemoteMediator @Inject constructor(
+    query: String? = null,
     private val service: Api,
-    private val db:AppDatabase
+    private val db: AppDatabase
 ) : RemoteMediator<Int, PhotoItem>() {
 
+    val querySearch = query
     override suspend fun initialize(): InitializeAction {
         // Launch remote refresh as soon as paging starts and do not trigger remote prepend or
         // append until refresh has succeeded. In cases where we don't mind showing out-of-date,
@@ -61,7 +68,11 @@ class FlickrRemoteMediator(
 //        val apiQuery = query + IN_QUALIFIER
 
         try {
-            val apiResponse = service.getRecent(page, state.config.pageSize)
+            var apiResponse = if (querySearch == null) {
+                service.getRecent(page, state.config.pageSize)
+            } else {
+                service.getPhotoSearch(querySearch, page, state.config.pageSize)
+            }
             val photos = apiResponse.photos.photo
             val endOfPaginationReached = photos.isEmpty()
 
@@ -93,7 +104,7 @@ class FlickrRemoteMediator(
         return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { it ->
                 // Get the remote keys of the last item retrieved
-                db.remoteKeysDao().remoteKeysRepoId(it.id)
+                db.remoteKeysDao().remoteKeysId(it.id)
             }
     }
 
@@ -103,7 +114,7 @@ class FlickrRemoteMediator(
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { it ->
                 // Get the remote keys of the first items retrieved
-                db.remoteKeysDao().remoteKeysRepoId(it.id)
+                db.remoteKeysDao().remoteKeysId(it.id)
             }
     }
 
@@ -114,7 +125,7 @@ class FlickrRemoteMediator(
         // Get the item closest to the anchor position
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { it ->
-                db.remoteKeysDao().remoteKeysRepoId(it)
+                db.remoteKeysDao().remoteKeysId(it)
             }
         }
     }

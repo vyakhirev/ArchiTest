@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_detailFragment_to_listMyFragment"
             app:destination="@id/listMyFragment" />
+        <argument
+            android:name="photoItem"
+            app:argType="com.mikhail.vyakhirev.data.model.PhotoItem" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -39,5 +42,5 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.mikhail.vyakhirev.presentation.settings_fragment.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="SettingsFragment" /><action android:id="@+id/action_global_listMyFragment" app:destination="@id/listMyFragment"/>
 </navigation>

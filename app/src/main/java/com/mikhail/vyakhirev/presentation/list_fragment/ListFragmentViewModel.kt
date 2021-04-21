@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import com.mikhail.vyakhirev.data.IRepository
+import com.mikhail.vyakhirev.data.model.PhotoItem
 import com.mikhail.vyakhirev.presentation.adapters.UiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -49,6 +50,9 @@ class ListFragmentViewModel @Inject constructor(
         return newResult
     }
 
+    fun favoriteSwitcher(photoItem: PhotoItem) {
+        photoItem.isFavorite = !photoItem.isFavorite
+    }
 
 }
 

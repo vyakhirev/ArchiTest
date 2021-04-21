@@ -31,13 +31,31 @@ class Repository @Inject constructor(
                 enablePlaceholders = false
             ),
             remoteMediator = FlickrRemoteMediator(
+                null,
                 retrofit.api,
                 db
             ),
             pagingSourceFactory = pagingSourceFactory
         ).flow
 
+    @ExperimentalPagingApi
+    override fun getPhotoSearchResult(
+        query: String
+    ): Flow<PagingData<PhotoItem>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            remoteMediator = FlickrRemoteMediator(
+                "Moon",
+                retrofit.api,
+                db
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow
 
+}
 //    fun getSearchResultStream(query: String): Flow<PagingData<PhotoItem>> {
 //        return Pager(
 //            config = PagingConfig(
@@ -50,4 +68,4 @@ class Repository @Inject constructor(
 //    companion object{
 //       private const val NETWORK_PAGE_SIZE=30
 //    }
-}
+//}

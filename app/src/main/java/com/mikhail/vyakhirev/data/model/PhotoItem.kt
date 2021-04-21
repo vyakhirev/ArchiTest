@@ -2,9 +2,10 @@ package com.mikhail.vyakhirev.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "photos")
-data class PhotoItem(
+data class PhotoItem (
     @field:PrimaryKey
     var id: String,
     var owner: String,
@@ -17,7 +18,7 @@ data class PhotoItem(
     var width_n: String?,
     var height_n: String?,
     var isFavorite: Boolean = false
-) {
+) : Serializable {
     fun getFlickrImageLink(
         size: Char = 'w'
     ): String {

@@ -70,6 +70,8 @@ dependencies {
     //Hilt di framework
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    //Hilt  integration with the Jetpack navigation library
+    implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0-beta01'
     //Navigation component
     // Kotlin
     def nav_version = "2.3.5"
