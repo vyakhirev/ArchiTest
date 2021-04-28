@@ -25,4 +25,12 @@ suspend fun getPhotoSearch(
         @Query("format") format: String = "json"
     ): ResponsePhotoItemHolder
 
+//    flickr.photos.getInfo
+
+    @GET("/services/rest/?method=flickr.photos.getInfo")
+    suspend fun getInfo(
+        @Query("photo_id") page: Int,
+        @Query("nojsoncallback") noJsonCallback: String = "nojsoncallback",
+        @Query("format") format: String = "json"
+    ): ResponsePhotoItemHolder
 }

@@ -1,38 +1,42 @@
 package com.mikhail.vyakhirev.presentation.favorites_fragment
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
 import com.mikhail.vyakhirev.data.IRepository
+import com.mikhail.vyakhirev.data.model.FavoriteModel
 import com.mikhail.vyakhirev.data.model.PhotoItem
-import com.mikhail.vyakhirev.presentation.adapters.UiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val repository: IRepository
 ) : ViewModel() {
-    private var currentResult: Flow<PagingData<UiModel>>? = null
 
-    fun getFavorites(): Flow<PagingData<UiModel>> {
-        val lastResult = currentResult
-        if (lastResult != null) {
-            return lastResult
+    private val _favorites = MutableLiveData<List<FavoriteModel>>()
+    val favorites: LiveData<List<FavoriteModel>> = _favorites
+
+    suspend fun getFavorites() {
+        viewModelScope.launch {
+            _favorites.value = repository.getFavorites()
         }
+//        if (lastResult != null) {
+//            return lastResult
+//        }
 //        currentQueryValue = queryString
-        val newResult: Flow<PagingData<UiModel>> = repository.getFavorites()
-            .map { pagingData -> pagingData.map { UiModel.Photo(it) }.filter { it.photoItem.isFavorite} }
-            .map {
-                it.insertSeparators<UiModel.Photo, UiModel> { before, after ->
-                    null
-                }
-            }
-            .cachedIn(viewModelScope)
-        currentResult = newResult
-        return newResult
+//        val newResult:List<PhotoItem> = repository.getFavorites()
+//            .map { pagingData -> pagingData { UiModel.Photo(it) }.filter { it.photoItem.isFavorite} }
+//            .map {
+//                it.insertSeparators<UiModel.Photo, UiModel> { before, after ->
+//                    null
+//                }
+//            }
+//            .cachedIn(viewModelScope)
+//        currentResult = newResult
+//        return newResult
     }
 
     fun favoriteSwitcher(photoItem: PhotoItem) {

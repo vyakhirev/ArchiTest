@@ -1,4 +1,5 @@
 <resources>
+    <string name="search_hint">Search photo</string>
     <string name="app_name">ArchiTest</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
@@ -19,4 +20,5 @@
     <string name="favorites_tag">Favorites fragment</string>
     <string name="settings_fragment_tag">Settings fragment</string>
     <string name="detail_fragment_tag">Detail fragment</string>
+    <string name="result_found_msg">results found for this query:</string>
 </resources>

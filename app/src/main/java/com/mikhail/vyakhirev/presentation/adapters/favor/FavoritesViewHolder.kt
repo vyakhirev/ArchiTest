@@ -1,35 +1,25 @@
-package com.mikhail.vyakhirev.presentation.adapters
+package com.mikhail.vyakhirev.presentation.adapters.favor
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ImageView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mikhail.vyakhirev.R
-import com.mikhail.vyakhirev.data.model.PhotoItem
+import com.mikhail.vyakhirev.data.model.FavoriteModel
 import com.mikhail.vyakhirev.databinding.ListRowBinding
-import com.mikhail.vyakhirev.presentation.list_fragment.ListMyFragmentDirections
 
-
-class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class FavoritesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     var binding: ListRowBinding? = null
 
     @SuppressLint("ResourceAsColor")
-    fun bind(item: PhotoItem) {
+    fun bind(item: FavoriteModel) {
         binding = ListRowBinding.bind(itemView)
-
-        binding?.photoIV?.loadImageFromLink(item.getFlickrImageLink())
-
-//        binding?.photoIV?.setOnClickListener {
-//            navigateToDetail(it,item)
-//        }
+        binding?.photoIV?.loadImageFromLink(item.imageUrl)
 
         binding?.titleTV?.setTextColor(R.color.colorPrimary)
         binding?.titleTV?.text = item.title
@@ -52,15 +42,11 @@ class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     companion object {
-        fun create(parent: ViewGroup): ListViewHolder {
+        fun create(parent: ViewGroup): FavoritesViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.list_row, parent, false)
-            return ListViewHolder(view)
+            return FavoritesViewHolder(view)
         }
     }
 
-//    private fun navigateToDetail(view: View,photoItem: PhotoItem) {
-//        val direction = ListMyFragmentDirections.actionListMyFragmentToDetailFragment(photoItem)
-//        view.findNavController().navigate(direction)
-//    }
 }

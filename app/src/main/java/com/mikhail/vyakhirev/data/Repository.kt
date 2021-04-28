@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.mikhail.vyakhirev.SharedPrefsUtil
 import com.mikhail.vyakhirev.data.local.db.AppDatabase
+import com.mikhail.vyakhirev.data.model.FavoriteModel
 import com.mikhail.vyakhirev.data.model.PhotoItem
 import com.mikhail.vyakhirev.data.remote.RetrofitClient
 import com.mikhail.vyakhirev.utils.NETWORK_PAGE_SIZE
@@ -18,25 +19,12 @@ class Repository @Inject constructor(
     private val db: AppDatabase
 //        private val signalRClient: SignalRClient
 ) : IRepository {
-    //    override suspend fun getFavorites(page:Int,perPage:Int): ResponsePhotoItemHolder {
-//        return retrofit.api.getRecent(page,perPage)
-//    }
+
     private val pagingSourceFactory = { db.photoItemDao().getTop() }
 
-    @OptIn(ExperimentalPagingApi::class)
-    override fun getFavorites(): Flow<PagingData<PhotoItem>> =
-        Pager(
-            config = PagingConfig(
-                pageSize = NETWORK_PAGE_SIZE,
-                enablePlaceholders = false
-            ),
-            remoteMediator = FlickrRemoteMediator(
-                null,
-                retrofit.api,
-                db
-            ),
-            pagingSourceFactory = pagingSourceFactory
-        ).flow
+    override suspend fun getFavorites(): List<FavoriteModel> {
+        return db.favoritesDao().loadAllFavorites()
+    }
 
     @ExperimentalPagingApi
     override fun getPhotoSearchResult(
@@ -48,14 +36,41 @@ class Repository @Inject constructor(
                 enablePlaceholders = false
             ),
             remoteMediator = FlickrRemoteMediator(
-                "Moon",
-                retrofit.api,
-                db
+                query = query,
+                retrofit,
+                db,
+                prefs
             ),
             pagingSourceFactory = pagingSourceFactory
         ).flow
 
+
+    override fun saveQueryToPrefs(query: String) = prefs.saveLastQuery(query)
+
+    override fun loadQueryFromPrefs(): String = prefs.loadLastQuery()
+
+    override suspend fun getStatByQuery(): Int {
+        return db.queryStatDao().getStatByQuery(loadQueryFromPrefs())?.total ?: 0
+    }
+
+    override suspend fun switchFavorite(photoItem: PhotoItem) {
+        db.photoItemDao().switchFavorites(photoItem)
+        if (photoItem.isFavorite)
+            db.favoritesDao().addToFavorites(
+                FavoriteModel(
+                    id = photoItem.id,
+                    title = photoItem.title,
+                    imageUrl = photoItem.getFlickrImageLink(),
+                    isFavorite = true
+                )
+            )
+        else
+            db.favoritesDao().deleteFromFavorites(photoItem.id)
+    }
+
 }
+
+
 //    fun getSearchResultStream(query: String): Flow<PagingData<PhotoItem>> {
 //        return Pager(
 //            config = PagingConfig(

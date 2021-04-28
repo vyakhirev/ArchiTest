@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Cookie
-import java.lang.Exception
 import javax.inject.Inject
 
 class SharedPrefsUtil @Inject constructor(@ApplicationContext context: Context) {
@@ -27,5 +26,15 @@ class SharedPrefsUtil @Inject constructor(@ApplicationContext context: Context) 
         }
     }
 
+    fun saveLastQuery(query: String) {
+        prefs.edit().putString(LAST_QUERY, query).apply()
+    }
 
+    fun loadLastQuery(): String {
+        return prefs.getString(LAST_QUERY, "") ?: ""
+    }
+
+    companion object {
+        const val LAST_QUERY = "last_query"
+    }
 }

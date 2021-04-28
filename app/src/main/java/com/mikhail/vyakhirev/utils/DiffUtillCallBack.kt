@@ -1,7 +1,7 @@
 package com.mikhail.vyakhirev.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.mikhail.vyakhirev.presentation.adapters.UiModel
+import com.mikhail.vyakhirev.data.model.UiModel
 
 class DiffUtilCallBack : DiffUtil.ItemCallback<UiModel>() {
     override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {

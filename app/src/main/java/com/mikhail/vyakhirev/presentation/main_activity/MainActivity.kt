@@ -80,50 +80,50 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_search, menu)
-        val searchItem: MenuItem = menu.findItem(R.id.action_search)
-        val searchView: SearchView = searchItem.actionView as SearchView
-
-        searchView.setOnQueryTextListener(
-            DebouncingQueryTextListener(
-                this.lifecycle
-            ) { newText ->
-                newText?.let {
-//                    if (it.isEmpty()) {
-//                        viewModel.resetSearch()
-//                    } else {
-                        viewModel.searchMovies(it)
-//                    }
-                }
-            }
-        )
-        return true
-    }
-
-    internal class DebouncingQueryTextListener(
-        lifecycle: Lifecycle,
-        private val onDebouncingQueryTextChange: (String?) -> Unit
-    ) : SearchView.OnQueryTextListener {
-        var debouncePeriod: Long = 500
-
-        private val coroutineScope = lifecycle.coroutineScope
-
-        private var searchJob: Job? = null
-
-        override fun onQueryTextSubmit(query: String?): Boolean {
-            return false
-        }
-
-        override fun onQueryTextChange(newText: String?): Boolean {
-            searchJob?.cancel()
-            searchJob = coroutineScope.launch {
-                newText?.let {
-                    delay(debouncePeriod)
-                    onDebouncingQueryTextChange(newText)
-                }
-            }
-            return false
-        }
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        menuInflater.inflate(R.menu.menu_search, menu)
+//        val searchItem: MenuItem = menu.findItem(R.id.action_search)
+//        val searchView: SearchView = searchItem.actionView as SearchView
+//
+//        searchView.setOnQueryTextListener(
+//            DebouncingQueryTextListener(
+//                this.lifecycle
+//            ) { newText ->
+//                newText?.let {
+////                    if (it.isEmpty()) {
+////                        viewModel.resetSearch()
+////                    } else {
+//                        viewModel.searchMovies(it)
+////                    }
+//                }
+//            }
+//        )
+//        return true
+//    }
+//
+//    internal class DebouncingQueryTextListener(
+//        lifecycle: Lifecycle,
+//        private val onDebouncingQueryTextChange: (String?) -> Unit
+//    ) : SearchView.OnQueryTextListener {
+//        var debouncePeriod: Long = 500
+//
+//        private val coroutineScope = lifecycle.coroutineScope
+//
+//        private var searchJob: Job? = null
+//
+//        override fun onQueryTextSubmit(query: String?): Boolean {
+//            return false
+//        }
+//
+//        override fun onQueryTextChange(newText: String?): Boolean {
+//            searchJob?.cancel()
+//            searchJob = coroutineScope.launch {
+//                newText?.let {
+//                    delay(debouncePeriod)
+//                    onDebouncingQueryTextChange(newText)
+//                }
+//            }
+//            return false
+//        }
+//    }
 }

@@ -5,11 +5,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.mikhail.vyakhirev.SharedPrefsUtil
 import com.mikhail.vyakhirev.data.local.db.AppDatabase
 import com.mikhail.vyakhirev.data.local.db.RemoteKeys
 import com.mikhail.vyakhirev.data.model.PhotoItem
-import com.mikhail.vyakhirev.data.model.ResponsePhotoItemHolder
-import com.mikhail.vyakhirev.data.remote.Api
+import com.mikhail.vyakhirev.data.model.QueryStatModel
+import com.mikhail.vyakhirev.data.remote.RetrofitClient
 import com.mikhail.vyakhirev.utils.STARTING_PAGE_INDEX
 import retrofit2.HttpException
 import java.io.IOException
@@ -18,8 +19,9 @@ import javax.inject.Inject
 @OptIn(ExperimentalPagingApi::class)
 class FlickrRemoteMediator @Inject constructor(
     query: String? = null,
-    private val service: Api,
-    private val db: AppDatabase
+    private val retrofit: RetrofitClient,
+    private val db: AppDatabase,
+    private val prefsUtil: SharedPrefsUtil
 ) : RemoteMediator<Int, PhotoItem>() {
 
     val querySearch = query
@@ -68,18 +70,25 @@ class FlickrRemoteMediator @Inject constructor(
 //        val apiQuery = query + IN_QUALIFIER
 
         try {
-            var apiResponse = if (querySearch == null) {
-                service.getRecent(page, state.config.pageSize)
+            var apiResponse = if (querySearch.isNullOrBlank()) {
+                retrofit.api.getRecent(page, state.config.pageSize)
             } else {
-                service.getPhotoSearch(querySearch, page, state.config.pageSize)
+                retrofit.api.getPhotoSearch(querySearch, page, state.config.pageSize)
             }
+
+            val total = apiResponse.photos.total
+
             val photos = apiResponse.photos.photo
             val endOfPaginationReached = photos.isEmpty()
 
+            val lastQuery = prefsUtil.loadLastQuery()
             db.withTransaction {
                 // clear all tables in the database
                 if (loadType == LoadType.REFRESH) {
                     db.remoteKeysDao().clearRemoteKeys()
+//                    if (querySearch == lastQuery)
+//                        db.photoItemDao().clearButSaveFavor(false)
+//                    else
                     db.photoItemDao().clearDb()
                 }
                 val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
@@ -87,8 +96,21 @@ class FlickrRemoteMediator @Inject constructor(
                 val keys = photos.map {
                     RemoteKeys(photoId = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
+
+                val favorites = db.favoritesDao().loadAllFavorites()
+                    .map {
+                        it.id
+                    }
+
+                photos.map {
+                    if (favorites.contains(it.id))
+                        it.isFavorite = true
+                }
+
+
                 db.remoteKeysDao().insertAll(keys)
                 db.photoItemDao().insertAll(photos)
+                db.queryStatDao().insertAll(QueryStatModel(querySearch.toString(), total))
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: IOException) {
