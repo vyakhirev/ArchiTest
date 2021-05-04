@@ -4,6 +4,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.AuthResult
 import com.mikhail.vyakhirev.SharedPrefsUtil
 import com.mikhail.vyakhirev.data.local.db.AppDatabase
 import com.mikhail.vyakhirev.data.model.FavoriteModel
@@ -44,6 +46,10 @@ class Repository @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         ).flow
 
+    override fun saveAuthResult(authCredential: AuthCredential) {
+       prefs.saveAuthResult(authCredential)
+    }
+
 
     override fun saveQueryToPrefs(query: String) = prefs.saveLastQuery(query)
 
@@ -54,7 +60,7 @@ class Repository @Inject constructor(
     }
 
     override suspend fun switchFavorite(photoItem: PhotoItem) {
-        db.photoItemDao().switchFavorites(photoItem)
+//        db.photoItemDao().switchFavorites(photoItem)
         if (photoItem.isFavorite)
             db.favoritesDao().addToFavorites(
                 FavoriteModel(
@@ -66,6 +72,14 @@ class Repository @Inject constructor(
             )
         else
             db.favoritesDao().deleteFromFavorites(photoItem.id)
+    }
+
+    override suspend fun switchFavorite(photoItemId: String) {
+        db.favoritesDao().deleteFromFavorites(photoItemId)
+    }
+
+    override suspend fun getPhotoItemByID(id: String): PhotoItem {
+        return retrofit.api.getInfo(id).photos.photo.first()
     }
 
 }

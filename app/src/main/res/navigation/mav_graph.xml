@@ -43,4 +43,8 @@
         android:id="@+id/settingsFragment"
         android:name="com.mikhail.vyakhirev.presentation.settings_fragment.SettingsFragment"
         android:label="SettingsFragment" /><action android:id="@+id/action_global_listMyFragment" app:destination="@id/listMyFragment"/>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.mikhail.vyakhirev.presentation.login_fragment.LoginFragment"
+        android:label="LoginFragment" />
 </navigation>

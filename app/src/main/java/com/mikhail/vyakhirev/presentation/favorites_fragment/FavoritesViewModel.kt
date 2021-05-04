@@ -19,6 +19,9 @@ class FavoritesViewModel @Inject constructor(
     private val _favorites = MutableLiveData<List<FavoriteModel>>()
     val favorites: LiveData<List<FavoriteModel>> = _favorites
 
+    private val _favoriteItem = MutableLiveData<PhotoItem>()
+    val favoriteItem: LiveData<PhotoItem> = _favoriteItem
+
     suspend fun getFavorites() {
         viewModelScope.launch {
             _favorites.value = repository.getFavorites()
@@ -39,10 +42,17 @@ class FavoritesViewModel @Inject constructor(
 //        return newResult
     }
 
-    fun favoriteSwitcher(photoItem: PhotoItem) {
-        photoItem.isFavorite = !photoItem.isFavorite
+    fun favoriteSwitcher(photoItem: FavoriteModel) {
+//        photoItem.isFavorite = !photoItem.isFavorite
+        viewModelScope.launch {
+            repository.switchFavorite(photoItem.id)
+            getFavorites()
+        }
     }
 
+    suspend fun getPhotoItemById(id: String) {
+        _favoriteItem.value = repository.getPhotoItemByID(id)
+    }
 }
 
 //@Suppress("UNCHECKED_CAST")

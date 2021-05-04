@@ -1,16 +1,22 @@
 package com.mikhail.vyakhirev
 
 import android.app.Application
+import com.facebook.appevents.AppEventsLogger
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class App : Application() {
 
-//    override fun onCreate() {
-//        super.onCreate()
-//        FirebaseApp.initializeApp(baseContext)
-//    }
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(baseContext)
+//            FacebookSdk.sdkInitialize(applicationContext)
+        AppEventsLogger.activateApp(this)
+
+
+    }
+
 
 //    override val di = DI.lazy {
 //

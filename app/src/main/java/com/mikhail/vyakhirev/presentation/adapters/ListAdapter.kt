@@ -1,5 +1,6 @@
 package com.mikhail.vyakhirev.presentation.adapters
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +11,8 @@ import com.mikhail.vyakhirev.utils.DiffUtilCallBack
 
 class ListAdapter(
     val favorStarClickListener: ((photo: PhotoItem) -> Unit)?,
-    val photoClickListener: ((photo: PhotoItem) -> Unit)?,
-    val posListener:((pos:Int) -> Unit)?
+    val photoClickListener: ((photo: PhotoItem) -> Unit)?
+//    val posListener:((pos:Int) -> Unit)?
 ) : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(DiffUtilCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -38,7 +39,8 @@ class ListAdapter(
                     (holder as ListViewHolder).bind(uiModel.photoItem)
                     holder.binding?.favorStar?.setOnClickListener {
                         favorStarClickListener?.invoke(uiModel.photoItem)
-                        posListener?.invoke(position)
+                        notifyItemChanged(position)
+//                        posListener?.invoke(position)
                     }
                     holder.binding?.photoIV?.setOnClickListener {
                         photoClickListener?.invoke(uiModel.photoItem)

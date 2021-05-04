@@ -1,36 +1,22 @@
 package com.mikhail.vyakhirev.presentation.main_activity
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.kodein.di.Copy
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.android.retainedSubDI
-import org.kodein.di.instance
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    //    override val di by di()
-//    override val di by retainedSubDI(closestDI(), copy = Copy.All) {
-//    }
-//    private val factory by instance<MainActivityViewModelFactory>()
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -39,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
 //        viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
+
+//Crushlitics
+//        val i= 10 / 0
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -52,7 +41,21 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
 
-        binding.bottomNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        var isLogged = false
+
+        val facebookToken=AccessToken.getCurrentAccessToken()
+        if(facebookToken != null && !facebookToken.isExpired)
+            isLogged = true
+
+        if (!isLogged) {
+            navController.navigate(R.id.loginFragment)
+            binding.bottomNav.visibility=View.GONE
+        }
+        else{
+            binding.bottomNav.visibility=View.VISIBLE
+            binding.bottomNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        }
+
     }
 
     private val onNavigationItemSelectedListener =
@@ -79,6 +82,11 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        callbackManager.onActivityResult(requestCode, resultCode, data)
+//        super.onActivityResult(requestCode, resultCode, data)
+//    }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
 //        menuInflater.inflate(R.menu.menu_search, menu)

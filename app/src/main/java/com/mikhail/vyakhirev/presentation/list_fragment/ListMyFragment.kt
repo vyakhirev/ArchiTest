@@ -18,6 +18,7 @@ import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.databinding.ListFragmentBinding
 import com.mikhail.vyakhirev.presentation.adapters.ListAdapter
 import com.mikhail.vyakhirev.presentation.adapters.MyLoadStateAdapter
+import com.mikhail.vyakhirev.presentation.settings_fragment.SettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -43,8 +44,6 @@ class ListMyFragment : Fragment() {
     ): View {
         val listFragmentBinding = ListFragmentBinding.inflate(inflater, container, false)
         binding = listFragmentBinding
-
-
         return binding!!.root
     }
 
@@ -62,8 +61,8 @@ class ListMyFragment : Fragment() {
         search(query)
         initSearch(query)
 
-        viewModel.queryStat.observe(viewLifecycleOwner,{
-            binding?.infoTV?.text = "$it"+getString(R.string.result_found_msg)+ "\"$query\""
+        viewModel.queryStat.observe(viewLifecycleOwner, {
+            binding?.infoTV?.text = "$it" + getString(R.string.result_found_msg) + "\"$query\""
         })
 
         binding!!.retryButton.setOnClickListener { adapter.retry() }
@@ -78,22 +77,21 @@ class ListMyFragment : Fragment() {
         super.onSaveInstanceState(outState)
         val query = binding?.searchET?.text.toString()
         outState.putString(LAST_SEARCH_QUERY, query)
-
-//        outState.putString(LAST_SEARCH_QUERY,queryLast)
     }
 
     private fun initAdapter() {
 
-        adapter = ListAdapter(favorStarClickListener = {
-            viewModel.favoriteSwitcher(it)
-        }, posListener = {
-            adapter.notifyItemChanged(it)
-        }, photoClickListener = {
-            val direction = ListMyFragmentDirections.actionListMyFragmentToDetailFragment(it)
-            view?.findNavController()?.navigate(direction)
-            val query = binding?.searchET?.text.toString()
-            viewModel.saveQuery(query)
-        }
+        adapter = ListAdapter(
+            favorStarClickListener = {
+                viewModel.favoriteSwitcher(it)
+            },
+            photoClickListener = {
+//                viewModel.favoriteSwitcher(it)
+                val direction = ListMyFragmentDirections.actionListMyFragmentToDetailFragment(it)
+                view?.findNavController()?.navigate(direction)
+                val query = binding?.searchET?.text.toString()
+                viewModel.saveQuery(query)
+            }
         )
 
         binding?.listPhotoRv?.layoutManager = GridLayoutManager(context, 2)
