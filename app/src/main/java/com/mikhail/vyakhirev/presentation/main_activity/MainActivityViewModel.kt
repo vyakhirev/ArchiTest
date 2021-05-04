@@ -8,6 +8,9 @@ class MainActivityViewModel(private val repository: IRepository) : ViewModel()  
     fun kan(){
         repository.toString()
     }
+    fun searchMovies(query:String){
+
+    }
 }
 @Suppress("UNCHECKED_CAST")
 class MainActivityViewModelFactory(

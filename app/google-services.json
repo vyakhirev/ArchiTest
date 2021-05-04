@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "230689439405",
+    "project_id": "flickr-tool-36279",
+    "storage_bucket": "flickr-tool-36279.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230689439405:android:024e8e18eee7d034d29024",
+        "android_client_info": {
+          "package_name": "com.mikhail.vyakhirev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "230689439405-f04jte0q6i8qbio7vhtqdlgi8a7j5s5u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mikhail.vyakhirev",
+            "certificate_hash": "d9ad9ae56b3ac7c096120bdebfba4dde71923074"
+          }
+        },
+        {
+          "client_id": "230689439405-s38lobqo4ptj7g6j4hog601jon9knt4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1PnC78iMRAsy2p0aVU0wLTXydIV3j1Gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "230689439405-s38lobqo4ptj7g6j4hog601jon9knt4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,87 +2,53 @@ package com.mikhail.vyakhirev.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.data.model.PhotoItem
-import com.mikhail.vyakhirev.databinding.ListRowBinding
-import com.mikhail.vyakhirev.presentation.list_fragment.ListFragmentViewModel
+import com.mikhail.vyakhirev.data.model.UiModel
+import com.mikhail.vyakhirev.utils.DiffUtilCallBack
 
+class ListAdapter(
+    val favorStarClickListener: ((photo: PhotoItem) -> Unit)?,
+    val photoClickListener: ((photo: PhotoItem) -> Unit)?
+//    val posListener:((pos:Int) -> Unit)?
+) : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(DiffUtilCallBack()) {
 
-class ListAdapter (
-    private var items: List<PhotoItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = ListRowBinding.inflate(inflater, parent, false)
-        return ListViewHolder(binding.root)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == R.layout.list_row) {
+            ListViewHolder.create(parent)
+        } else {
+            SeparatorViewHolder.create(parent)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is UiModel.Photo -> R.layout.list_row
+            is UiModel.SeparatorItem -> R.layout.separator_view_item
+            null -> throw UnsupportedOperationException("Unknown view")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ListViewHolder)
-            holder.bind(items[position])
+        val uiModel = getItem(position)
+        uiModel.let {
+            when (uiModel) {
+                is UiModel.Photo -> {
+                    (holder as ListViewHolder).bind(uiModel.photoItem)
+                    holder.binding?.favorStar?.setOnClickListener {
+                        favorStarClickListener?.invoke(uiModel.photoItem)
+                        notifyItemChanged(position)
+//                        posListener?.invoke(position)
+                    }
+                    holder.binding?.photoIV?.setOnClickListener {
+                        photoClickListener?.invoke(uiModel.photoItem)
+                    }
+                }
+                is UiModel.SeparatorItem -> (holder as SeparatorViewHolder).bind(uiModel.description)
+                else -> throw UnsupportedOperationException("Unknown view")
+            }
+        }
     }
-
-    override fun getItemCount()= items.size
-
-    fun updateItems(newItems:List<PhotoItem>){
-       items=newItems
-       notifyDataSetChanged()
-    }
-
 }
-//RecyclerView.Adapter<ProductListAdapter.ProductViewHolder>() {
-//    inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        fun bind(product: Basket.Request) {
-//            val binding = DataBindingUtil.bind<ProductRowBinding>(itemView)?.apply {
-//                this.viewmodel = viewModel
-//                this.product = product
-//            }
-//
-//            binding?.normalLayout?.setOnClickListener {
-//                if(hasInternet(it)){
-//                    viewModel.openProduct(product)
-//                }
-//            }
-//
-//            binding?.emptyLayout?.setOnClickListener {
-//                if(hasInternet(it)){
-//                    viewModel.openProduct(product)
-//                }
-//            }
-//
-//            binding?.normalLayout?.setOnLongClickListener {
-//                viewModel.showProductDialog(product)
-//                return@setOnLongClickListener true
-//            }
-//        }
-//    }
-//
-//    fun getItem(position: Int): Basket.Request? {
-//        return try {
-//            items[position]
-//        } catch (ex: IndexOutOfBoundsException) {
-//            null
-//        }
-//
-//    }
-//
-//    private val items = ArrayList<Basket.Request>()
-//    fun submitList(newList: List<Basket.Request>) {
-//        items.clear()
-//        items.addAll(newList.sortedByDescending { it.createdAt })
-//        notifyDataSetChanged()
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-//        val inflater = LayoutInflater.from(parent.context)
-//        val binding = ProductRowBinding.inflate(inflater, parent, false)
-//        return ProductViewHolder(binding.root)
-//    }
-//
-//    override fun getItemCount(): Int = items.size
-//
-//    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-//        holder.bind(items[position])
-//    }
-//
-//
-//}

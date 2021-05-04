@@ -1,44 +1,45 @@
 package com.mikhail.vyakhirev
 
 import android.app.Application
-import androidx.room.Room
+import com.facebook.appevents.AppEventsLogger
 import com.google.firebase.FirebaseApp
-import com.mikhail.vyakhirev.data.IRepository
-import com.mikhail.vyakhirev.data.Repository
-import com.mikhail.vyakhirev.data.local.AppDatabase
-import com.mikhail.vyakhirev.data.remote.RetrofitClient
-import com.mikhail.vyakhirev.presentation.detail_fragment.DetailViewModelFactory
-import com.mikhail.vyakhirev.presentation.list_fragment.ListFragmentViewModelFactory
-import com.mikhail.vyakhirev.presentation.main_activity.MainActivityViewModelFactory
-import org.kodein.di.*
+import dagger.hilt.android.HiltAndroidApp
 
-class App : Application(), DIAware {
+@HiltAndroidApp
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(baseContext)
-    }
+//            FacebookSdk.sdkInitialize(applicationContext)
+        AppEventsLogger.activateApp(this)
 
-    override val di = DI.lazy {
-
-        bind { singleton { SharedPrefsUtil(this@App) } }
-        bind { singleton { RetrofitClient(instance()) } }
-        bind { singleton { String() } }
-
-        bind {
-            singleton {
-                Room.databaseBuilder(this@App, AppDatabase::class.java, "app_db")
-                    .fallbackToDestructiveMigration()
-                    .build()
-            }
-        }
-
-        bind<IRepository>() with singleton { Repository(instance(), instance(), instance()) }
-
-        bind { singleton { MainActivityViewModelFactory(instance()) } }
-        bind { singleton { ListFragmentViewModelFactory(instance()) } }
-        bind { singleton { DetailViewModelFactory(instance()) } }
 
     }
+
+
+//    override val di = DI.lazy {
+//
+//        bind { singleton { SharedPrefsUtil(this@App) } }
+//        bind { singleton { RetrofitClient(instance()) } }
+//        bind { singleton { String() } }
+//
+//        bind {
+//            singleton {
+//                Room.databaseBuilder(this@App, AppDatabase::class.java, "app_db")
+//                    .fallbackToDestructiveMigration()
+//                    .build()
+//            }
+//        }
+//
+//        bind<IRepository>() with singleton { Repository(instance(), instance(), instance()) }
+//
+//        bind { singleton { MainActivityViewModelFactory(instance()) } }
+//        bind { singleton { ListFragmentViewModelFactory(instance()) } }
+//        bind { singleton { DetailViewModelFactory(instance()) } }
+//        bind { singleton { FavoritesViewModelFactory(instance()) } }
+//        bind { singleton { SettingsViewModelFactory(instance()) } }
+//
+//    }
 
 }
