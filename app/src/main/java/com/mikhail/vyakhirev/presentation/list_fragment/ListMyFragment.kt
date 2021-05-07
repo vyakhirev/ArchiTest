@@ -1,12 +1,10 @@
 package com.mikhail.vyakhirev.presentation.list_fragment
 
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +16,7 @@ import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.databinding.ListFragmentBinding
 import com.mikhail.vyakhirev.presentation.adapters.ListAdapter
 import com.mikhail.vyakhirev.presentation.adapters.MyLoadStateAdapter
+import com.mikhail.vyakhirev.presentation.main_activity.MainActivity
 import com.mikhail.vyakhirev.presentation.settings_fragment.SettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -35,6 +34,7 @@ class ListMyFragment : Fragment() {
     private lateinit var adapter: ListAdapter
     private var binding: ListFragmentBinding? = null
     private var searchJob: Job? = null
+    private var accountButton: MenuItem? = null
 //    private var lastQuery = null
 
     @InternalCoroutinesApi
@@ -65,6 +65,11 @@ class ListMyFragment : Fragment() {
             binding?.infoTV?.text = "$it" + getString(R.string.result_found_msg) + "\"$query\""
         })
 
+        if (activity is MainActivity) {
+            var  mainActivity = activity as MainActivity
+            mainActivity.setBottomNavigationVisibility(View.VISIBLE)
+        }
+
         binding!!.retryButton.setOnClickListener { adapter.retry() }
     }
 
@@ -86,8 +91,7 @@ class ListMyFragment : Fragment() {
                 viewModel.favoriteSwitcher(it)
             },
             photoClickListener = {
-//                viewModel.favoriteSwitcher(it)
-                val direction = ListMyFragmentDirections.actionListMyFragmentToDetailFragment(it)
+                val direction = ListMyFragmentDirections.actionListMyFragmentToDetailFragment(it,null)
                 view?.findNavController()?.navigate(direction)
                 val query = binding?.searchET?.text.toString()
                 viewModel.saveQuery(query)

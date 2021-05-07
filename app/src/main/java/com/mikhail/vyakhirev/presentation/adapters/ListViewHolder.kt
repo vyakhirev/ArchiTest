@@ -10,6 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.data.model.PhotoItem
 import com.mikhail.vyakhirev.databinding.ListRowBinding
+import com.mikhail.vyakhirev.utils.extensions.loadImageFromLink
 
 class ListViewHolder(val binding: ListRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -31,15 +32,15 @@ class ListViewHolder(val binding: ListRowBinding) : RecyclerView.ViewHolder(bind
 
     }
 
-    private fun ImageView.loadImageFromLink(link: String?) {
-        if (!link.isNullOrEmpty()) {
-            Glide.with(context.applicationContext)
-                .load(link)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .into(this)
-        }
-    }
+//    private fun ImageView.loadImageFromLink(link: String?) {
+//        if (!link.isNullOrEmpty()) {
+//            Glide.with(context.applicationContext)
+//                .load(link)
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .dontAnimate()
+//                .into(this)
+//        }
+//    }
 
     companion object {
         fun create(parent: ViewGroup): ListViewHolder {

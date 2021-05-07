@@ -127,6 +127,8 @@ class LoginFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         viewModel.handleOnActivityResult(requestCode, resultCode, data)
+        viewModel.loadUserData()
+//        viewModel.loginManager.logInWithReadPermissions(this, facebook_permissions)
     }
 
     private companion object {

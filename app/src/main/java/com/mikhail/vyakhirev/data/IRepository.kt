@@ -24,7 +24,7 @@ interface IRepository {
 
     suspend fun switchFavorite(photoItem: PhotoItem)
 
-    suspend fun switchFavorite(photoItemId: String)
+    suspend fun deleteFavorite(photoItemId: String)
 
     suspend fun getPhotoItemByID(id: String): PhotoItem
 }

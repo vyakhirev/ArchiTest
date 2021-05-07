@@ -74,7 +74,7 @@ class Repository @Inject constructor(
             db.favoritesDao().deleteFromFavorites(photoItem.id)
     }
 
-    override suspend fun switchFavorite(photoItemId: String) {
+    override suspend fun deleteFavorite(photoItemId: String) {
         db.favoritesDao().deleteFromFavorites(photoItemId)
     }
 

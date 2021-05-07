@@ -71,6 +71,10 @@ dependencies {
     //Facebook sdk
     implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
 
+    //Circle Image View
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+//    implementation 'com.vivifarm.view:circleimageview:1.2.0'
+
     //Hilt di framework
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"

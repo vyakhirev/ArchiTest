@@ -1,30 +1,43 @@
 package com.mikhail.vyakhirev.presentation.main_activity
 
-import android.content.Intent
+import android.content.res.Resources
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.databinding.ActivityMainBinding
+import com.mikhail.vyakhirev.utils.extensions.getCroppedBitmap
+import com.mikhail.vyakhirev.utils.extensions.hasInternet
 import dagger.hilt.android.AndroidEntryPoint
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.URL
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: MainActivityViewModel
+    private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private var accountIcon: MenuItem? = null
+    private var accountName: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
 
 //Crushlitics
 //        val i= 10 / 0
@@ -33,29 +46,18 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
 
         setContentView(view)
-
         setSupportActionBar(binding.toolbar)
+        // Get a support ActionBar corresponding to this toolbar and enable the Up button
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
         navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
 
-        var isLogged = false
-
-        val facebookToken=AccessToken.getCurrentAccessToken()
-        if(facebookToken != null && !facebookToken.isExpired)
-            isLogged = true
-
-        if (!isLogged) {
-            navController.navigate(R.id.loginFragment)
-            binding.bottomNav.visibility=View.GONE
-        }
-        else{
-            binding.bottomNav.visibility=View.VISIBLE
-            binding.bottomNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-        }
-
+        binding.bottomNav.visibility = View.VISIBLE
+        binding.bottomNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+//        viewModel.loadFbUserData()
     }
 
     private val onNavigationItemSelectedListener =
@@ -83,55 +85,69 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        callbackManager.onActivityResult(requestCode, resultCode, data)
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.account_menu, menu)
+        accountIcon = menu?.findItem(R.id.account_icon)
 
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.menu_search, menu)
-//        val searchItem: MenuItem = menu.findItem(R.id.action_search)
-//        val searchView: SearchView = searchItem.actionView as SearchView
-//
-//        searchView.setOnQueryTextListener(
-//            DebouncingQueryTextListener(
-//                this.lifecycle
-//            ) { newText ->
-//                newText?.let {
-////                    if (it.isEmpty()) {
-////                        viewModel.resetSearch()
-////                    } else {
-//                        viewModel.searchMovies(it)
-////                    }
-//                }
-//            }
-//        )
-//        return true
-//    }
-//
-//    internal class DebouncingQueryTextListener(
-//        lifecycle: Lifecycle,
-//        private val onDebouncingQueryTextChange: (String?) -> Unit
-//    ) : SearchView.OnQueryTextListener {
-//        var debouncePeriod: Long = 500
-//
-//        private val coroutineScope = lifecycle.coroutineScope
-//
-//        private var searchJob: Job? = null
-//
-//        override fun onQueryTextSubmit(query: String?): Boolean {
-//            return false
-//        }
-//
-//        override fun onQueryTextChange(newText: String?): Boolean {
-//            searchJob?.cancel()
-//            searchJob = coroutineScope.launch {
-//                newText?.let {
-//                    delay(debouncePeriod)
-//                    onDebouncingQueryTextChange(newText)
-//                }
-//            }
-//            return false
-//        }
-//    }
+
+//        accountName = menu?.findItem(R.id.account_name)
+
+        viewModel.loadFbUserData()
+        viewModel.user.observe(this, {
+            supportActionBar?.title = "Search photo"
+            accountName?.title = it.name
+        })
+        setupAccountButton()
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setupAccountButton() {
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+
+        accountIcon?.setOnMenuItemClickListener {
+            if (account != null && hasInternet(this)) {
+                navController.navigate(R.id.userDetailsFragment)
+                binding.bottomNav.visibility = View.GONE
+            } else {
+                navController.navigate(R.id.loginFragment)
+                binding.bottomNav.visibility = View.GONE
+//                binding.bottomNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+            }
+            return@setOnMenuItemClickListener true
+        }
+
+        if (account != null && hasInternet(this)) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val drawable = getAccountImage(account.photoUrl)
+                if (drawable != null) {
+                    withContext(Dispatchers.Main) {
+                        accountIcon?.icon = drawable
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            accountIcon?.tooltipText = account.displayName
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun getAccountImage(url: Uri?): Drawable? {
+        return try {
+            val connection = URL(url.toString()).openConnection() as HttpURLConnection
+            connection.connect()
+            val bitmap = BitmapFactory.decodeStream(connection.inputStream).getCroppedBitmap()
+            BitmapDrawable(Resources.getSystem(), bitmap)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
+        }
+
+    }
+
+    fun setBottomNavigationVisibility(visibility: Int) {
+        // get the reference of the bottomNavigationView and set the visibility.
+        binding.bottomNav.visibility = visibility
+    }
+
 }

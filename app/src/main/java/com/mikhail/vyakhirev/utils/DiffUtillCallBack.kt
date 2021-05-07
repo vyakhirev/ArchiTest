@@ -6,7 +6,7 @@ import com.mikhail.vyakhirev.data.model.UiModel
 class DiffUtilCallBack : DiffUtil.ItemCallback<UiModel>() {
     override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
         return (oldItem is UiModel.Photo && newItem is UiModel.Photo &&
-                oldItem.photoItem.id == newItem.photoItem.id && oldItem.photoItem.isFavorite == newItem.photoItem.isFavorite) ||
+                oldItem.photoItem.id == newItem.photoItem.id ) ||
                 (oldItem is UiModel.SeparatorItem && newItem is UiModel.SeparatorItem &&
                         oldItem.description == newItem.description)
     }

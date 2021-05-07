@@ -45,7 +45,7 @@ class FavoritesViewModel @Inject constructor(
     fun favoriteSwitcher(photoItem: FavoriteModel) {
 //        photoItem.isFavorite = !photoItem.isFavorite
         viewModelScope.launch {
-            repository.switchFavorite(photoItem.id)
+            repository.deleteFavorite(photoItem.id)
             getFavorites()
         }
     }

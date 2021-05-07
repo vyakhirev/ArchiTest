@@ -2,14 +2,15 @@ package com.mikhail.vyakhirev.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "favorites")
 data class FavoriteModel(
     @PrimaryKey var id: String,
     var title: String?,
-    var imageUrl:String?,
-    var isFavorite:Boolean
-)
+    var imageUrl: String?,
+    var isFavorite: Boolean
+) : Serializable
 //    var owner: String,
 //    var secret: String,
 //    var server: String,

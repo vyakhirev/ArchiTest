@@ -29,7 +29,13 @@
             app:destination="@id/listMyFragment" />
         <argument
             android:name="photoItem"
-            app:argType="com.mikhail.vyakhirev.data.model.PhotoItem" />
+            app:argType="com.mikhail.vyakhirev.data.model.PhotoItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="favoriteModel"
+            app:argType="com.mikhail.vyakhirev.data.model.FavoriteModel"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -38,6 +44,9 @@
         <action
             android:id="@+id/action_favoritesFragment_to_listMyFragment"
             app:destination="@id/listMyFragment" />
+        <action
+            android:id="@+id/action_favoritesFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -47,4 +56,12 @@
         android:id="@+id/loginFragment"
         android:name="com.mikhail.vyakhirev.presentation.login_fragment.LoginFragment"
         android:label="LoginFragment" />
+    <fragment
+        android:id="@+id/userDetailsFragment"
+        android:name="com.mikhail.vyakhirev.presentation.user_details_fragment.UserDetailsFragment"
+        android:label="UserDetailsFragment" >
+        <action
+            android:id="@+id/action_userDetailsFragment_to_listMyFragment"
+            app:destination="@id/listMyFragment" />
+    </fragment><action android:id="@+id/action_global_favoritesFragment" app:destination="@id/favoritesFragment"/>
 </navigation>

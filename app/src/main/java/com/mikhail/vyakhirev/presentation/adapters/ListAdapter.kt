@@ -37,12 +37,14 @@ class ListAdapter(
             when (uiModel) {
                 is UiModel.Photo -> {
                     (holder as ListViewHolder).bind(uiModel.photoItem)
-                    holder.binding?.favorStar?.setOnClickListener {
+                    holder.binding.favorStar.setOnClickListener {
                         favorStarClickListener?.invoke(uiModel.photoItem)
                         notifyItemChanged(position)
-//                        posListener?.invoke(position)
                     }
-                    holder.binding?.photoIV?.setOnClickListener {
+//                    holder.binding?.favorStar?.setOnClickListener {
+//                        posListener?.invoke(position)
+//                    }
+                    holder.binding.photoIV.setOnClickListener {
                         photoClickListener?.invoke(uiModel.photoItem)
                     }
                 }

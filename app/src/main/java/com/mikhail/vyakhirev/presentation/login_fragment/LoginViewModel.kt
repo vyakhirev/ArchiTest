@@ -3,13 +3,13 @@ package com.mikhail.vyakhirev.presentation.login_fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
+import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,10 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.*
 import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.data.Repository
-import com.mikhail.vyakhirev.data.model.AuthType
-import com.mikhail.vyakhirev.data.model.AuthUiModel
-import com.mikhail.vyakhirev.data.model.MaterialDialogContent
-import com.mikhail.vyakhirev.data.model.Result
+import com.mikhail.vyakhirev.data.model.*
 import com.mikhail.vyakhirev.utils.Event
 import com.mikhail.vyakhirev.utils.GOOGLE_PRIVATE_CLIENT_ID
 import com.mikhail.vyakhirev.utils.RC_GOOGLE_SIGN_IN_CODE
@@ -30,6 +27,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +38,9 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     val uiState: LiveData<AuthUiModel> get() = _uiState
+
+    private val _user = MutableLiveData<UserModel>()
+    val user: LiveData<UserModel> = _user
 
     private val resources = application.resources
     private val _uiState = MutableLiveData<AuthUiModel>()
@@ -52,7 +53,6 @@ class LoginViewModel @Inject constructor(
         override fun onSuccess(result: LoginResult?) {
             val credential = FacebookAuthProvider.getCredential(result?.accessToken?.token!!)
             handleFacebookCredential(credential)
-
         }
 
         override fun onCancel() {
@@ -87,7 +87,7 @@ class LoginViewModel @Inject constructor(
             safeApiCall { Result.Success(signInWithCredential(authCredential)!!) }.also {
                 if (it is Result.Success && it.data.user != null) {
                     emitUiState(success = true)
-                    repository.saveAuthResult(authCredential.zza())
+//                    repository.saveAuthResult(authCredential.zza())
                 }
                else
                     emitUiState(success = true)
@@ -259,4 +259,30 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+
+
+    fun loadUserData() {
+        viewModelScope.launch {
+            var facebookToken = AccessToken.getCurrentAccessToken()
+            val request= GraphRequest.newMeRequest(facebookToken) { `object`, response ->
+                try {
+                    val id = `object`.getString("id")
+                    _user.value = UserModel(
+                        id,
+                        `object`.getString("first_name") + " " + `object`.getString("last_name"),
+                        "https://graph.facebook.com/$id/picture",
+                        `object`.getString("email"), listOf()
+                    )
+                    Log.d("Kan","User is:  ${`object`.getString("first_name")}")
+                    Log.d("Kan","User is:  ${_user.value}")
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+            val parameters = Bundle()
+            parameters.putString("fields", "first_name,last_name,email,id")
+            request.parameters = parameters
+            request.executeAsync()
+        }
+    }
 }

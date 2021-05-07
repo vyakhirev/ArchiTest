@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.mikhail.vyakhirev.databinding.FavoritesFragmentBinding
 import com.mikhail.vyakhirev.presentation.adapters.favor.FavoritesAdapter
+import com.mikhail.vyakhirev.presentation.list_fragment.ListMyFragmentDirections
+import com.mikhail.vyakhirev.presentation.main_activity.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -37,6 +39,11 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getFavorites()
         initLivedataObservers()
+
+        if (activity is MainActivity) {
+            val  mainActivity = activity as MainActivity
+            mainActivity.setBottomNavigationVisibility(View.VISIBLE)
+        }
     }
 
     override fun onDestroyView() {
@@ -71,11 +78,13 @@ class FavoritesFragment : Fragment() {
         adapter = FavoritesAdapter(
             listOf(),
             photoClickListener = {
+                val direction = FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(null,it)
+                view?.findNavController()?.navigate(direction)
             },
             posListener = { adapter.notifyItemRemoved(it) },
-            favorStarClickListener = { viewModel.favoriteSwitcher(it) }
+            favorStarClickListener = { it?.let { it1 -> viewModel.favoriteSwitcher(it1) } }
         )
-        binding.favorPhotoRV.layoutManager = GridLayoutManager(requireContext(),2)
+        binding.favorPhotoRV.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.favorPhotoRV.adapter = adapter
     }
 

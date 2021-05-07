@@ -9,8 +9,8 @@ import com.mikhail.vyakhirev.presentation.adapters.ListViewHolder
 class FavoritesAdapter(
 //    private val context: Context,
     private var photos: List<FavoriteModel>,
-    val photoClickListener: ((favPhoto: FavoriteModel) -> Unit)?,
-    val favorStarClickListener: ((favorStar: FavoriteModel) -> Unit)?,
+    val photoClickListener: ((favPhoto: FavoriteModel?) -> Unit)?,
+    val favorStarClickListener: ((favorStar: FavoriteModel?) -> Unit)?,
     val posListener: ((pos: Int) -> Unit)?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

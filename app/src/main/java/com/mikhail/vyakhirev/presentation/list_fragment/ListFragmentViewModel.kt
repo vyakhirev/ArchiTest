@@ -8,6 +8,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.bumptech.glide.request.RequestOptions
+import com.facebook.AccessToken
+import com.facebook.GraphRequest
 import com.mikhail.vyakhirev.data.IRepository
 import com.mikhail.vyakhirev.data.model.PhotoItem
 import com.mikhail.vyakhirev.data.model.UiModel
@@ -15,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.json.JSONException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -82,8 +86,8 @@ class ListFragmentViewModel @Inject constructor(
     }
 
     fun favoriteSwitcher(photoItem: PhotoItem) {
-        photoItem.isFavorite = !photoItem.isFavorite
         viewModelScope.launch {
+            photoItem.isFavorite = !photoItem.isFavorite
             repository.switchFavorite(photoItem)
         }
     }
@@ -95,6 +99,44 @@ class ListFragmentViewModel @Inject constructor(
 
     fun loadLastQuery(): String = repository.loadQueryFromPrefs()
 
+}
+
+private fun loadUserProfile(newAccessToken: AccessToken?) {
+
+    val request = GraphRequest.newMeRequest(
+        newAccessToken
+    ) { `object`, response ->
+        try {
+            val first_name = `object`.getString("first_name")
+            val last_name = `object`.getString("last_name")
+            val email = `object`.getString("email")
+            val id = `object`.getString("id")
+            val image_url = "https://graph.facebook.com/$id/picture?type=normal"
+//                Log.e(TAG, "---------facebook Data------>$first_name,$last_name,$email$id")
+//                profile_email.setText(email)
+//                profile_name.setText("$first_name $last_name")
+            val requestOptions = RequestOptions()
+            requestOptions.dontAnimate()
+//                Glide.with(this@MainActivity).load(image_url).into(profile_pic)
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+//        val parameters = Bundle()
+//        parameters.putString("fields", "first_name,last_name,email,id")
+//        request.parameters = parameters
+//        request.executeAsync()
+
+}
+
+private fun checkLoginStatus(): Boolean {
+    val facebookToken = AccessToken.getCurrentAccessToken()
+    return if ((facebookToken != null && !facebookToken.isDataAccessExpired) && facebookToken.isExpired) {
+        loadUserProfile(AccessToken.getCurrentAccessToken())
+        true
+    } else false
 }
 
 //@Suppress("UNCHECKED_CAST")
