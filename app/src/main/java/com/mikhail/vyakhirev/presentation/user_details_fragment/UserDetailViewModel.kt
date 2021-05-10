@@ -5,20 +5,22 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.*
 import com.google.firebase.auth.FirebaseAuth
 import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.data.Repository
+import com.mikhail.vyakhirev.data.model.AppAuthorizationModel
 import com.mikhail.vyakhirev.data.model.UserModel
 import com.mikhail.vyakhirev.utils.GOOGLE_PRIVATE_CLIENT_ID
 import com.mikhail.vyakhirev.utils.extensions.hasInternet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UserDetailViewModel @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
     private val repository: Repository
 ) : ViewModel() {
 
@@ -37,20 +39,35 @@ class UserDetailViewModel @Inject constructor(
                 account.email,
                 listOf())
         }
+        else
+            viewModelScope.launch {
+               if(repository.isUserLoggedNow()) {
+                   val acc = repository.loadUserFromAppDb()
+                   _user.value = UserModel(
+                       acc.login,
+                       acc.login,
+                       "",
+                       acc.email,
+                       listOf())
+               }
+            }
     }
 
     fun signOut(application: Context) {
         if (hasInternet(application)) {
-//            val account = GoogleSignIn.getLastSignedInAccount(application)
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(GOOGLE_PRIVATE_CLIENT_ID)
                 .requestEmail()
                 .build()
             googleSignInClient = GoogleSignIn.getClient(application,gso)
-
             googleSignInClient.signOut()
-//            repository .signOut(googleSignInClient)
-//            finish.value = Event("")
+        }
+
+        //Logout app authorization user
+        viewModelScope.launch {
+            val acc = repository.loadUserFromAppDb()
+            acc.isLogged = false
+            repository.logoutUser(acc)
         }
     }
 

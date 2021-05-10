@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -15,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ArchiTest">
-        <activity android:name=".presentation.main_activity.MainActivity"></activity>
+        <activity android:name=".presentation.main_activity.MainActivity"/>
         <activity
             android:name="com.mikhail.vyakhirev.SplashActivity"
             android:theme="@style/SplashTheme">

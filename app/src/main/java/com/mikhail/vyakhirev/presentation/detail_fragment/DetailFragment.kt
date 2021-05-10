@@ -59,7 +59,7 @@ class DetailFragment : Fragment() {
 
         setHasOptionsMenu(true)
         (activity as? AppCompatActivity)?.supportActionBar?.apply {
-            title = getString(R.string.detail_fragment_tag)
+            title = getString(R.string.detail_fragment_label)
             setDisplayShowHomeEnabled(true)
             setDisplayHomeAsUpEnabled(true)
         }

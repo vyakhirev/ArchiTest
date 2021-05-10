@@ -14,7 +14,7 @@ interface FavoritesDao {
 
     @Query("SELECT * FROM favorites")
     suspend fun loadAllFavorites(): List<FavoriteModel>
-//
+
     @Query("DELETE FROM favorites WHERE id = :id" )
     suspend fun deleteFromFavorites(id:String)
 }

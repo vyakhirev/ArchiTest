@@ -2,7 +2,6 @@ package com.mikhail.vyakhirev.presentation.main_activity
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,10 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.mikhail.vyakhirev.data.IRepository
 import com.mikhail.vyakhirev.data.model.UserModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
 
@@ -29,6 +25,9 @@ class MainActivityViewModel @Inject constructor(
     private val _user = MutableLiveData<UserModel>()
     val user: LiveData<UserModel> = _user
 
+    private val _isLogged = MutableLiveData<Boolean>()
+    val isLogged: LiveData<Boolean> = _isLogged
+
     fun isFbLogged(): Boolean {
         val facebookToken = AccessToken.getCurrentAccessToken()
         return facebookToken != null && !facebookToken.isExpired
@@ -38,10 +37,16 @@ class MainActivityViewModel @Inject constructor(
         return GoogleSignIn.getLastSignedInAccount(context)?.isExpired != true
     }
 
+    fun isMyAppLogin() {
+        viewModelScope.launch {
+            _isLogged.value = repository.isUserLoggedNow()
+        }
+    }
+
     fun loadFbUserData() {
         viewModelScope.launch {
             val facebookToken = AccessToken.getCurrentAccessToken()
-            val request=GraphRequest.newMeRequest(facebookToken) { `object`, response ->
+            val request = GraphRequest.newMeRequest(facebookToken) { `object`, response ->
                 try {
                     val id = `object`.getString("id")
                     _user.value = UserModel(
@@ -63,7 +68,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun loadGoogleUserData(){
+    fun loadGoogleUserData() {
 
     }
 }

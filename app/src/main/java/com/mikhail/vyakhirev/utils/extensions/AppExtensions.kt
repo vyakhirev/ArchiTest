@@ -91,13 +91,13 @@ fun checkGPS(context: Context): Boolean {
 
 
     val gpsEnabled = try {
-        lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
     } catch (ex: Exception) {
         false
     }
 
     val networkEnabled = try {
-        lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     } catch (ex: Exception) {
         false
     }
@@ -111,5 +111,5 @@ fun checkGPS(context: Context): Boolean {
 }
 
 fun myLog(msg: Any?) {
-    Log.d("Kanotop", msg.toString())
+    Log.d("VMU", msg.toString())
 }

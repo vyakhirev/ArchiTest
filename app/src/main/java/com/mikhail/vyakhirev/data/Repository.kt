@@ -5,9 +5,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
 import com.mikhail.vyakhirev.SharedPrefsUtil
 import com.mikhail.vyakhirev.data.local.db.AppDatabase
+import com.mikhail.vyakhirev.data.model.AppAuthorizationModel
 import com.mikhail.vyakhirev.data.model.FavoriteModel
 import com.mikhail.vyakhirev.data.model.PhotoItem
 import com.mikhail.vyakhirev.data.remote.RetrofitClient
@@ -47,7 +47,7 @@ class Repository @Inject constructor(
         ).flow
 
     override fun saveAuthResult(authCredential: AuthCredential) {
-       prefs.saveAuthResult(authCredential)
+        prefs.saveAuthResult(authCredential)
     }
 
 
@@ -80,6 +80,38 @@ class Repository @Inject constructor(
 
     override suspend fun getPhotoItemByID(id: String): PhotoItem {
         return retrofit.api.getInfo(id).photos.photo.first()
+    }
+
+    override suspend fun registerUser(login: String, email: String, password: String) {
+        db.appAuthorizationDao().registerUser(
+            AppAuthorizationModel(
+                login = login,
+                email = email,
+                password = password
+            )
+        )
+    }
+
+    override suspend fun isAccessGranted(user: String, password: String): Boolean {
+        val users = db.appAuthorizationDao().checkUser(user, password)
+        return if (users.isNotEmpty()) {
+            users.first().isLogged = true
+            db.appAuthorizationDao().setLogged(users.first())
+            true
+        } else
+            false
+    }
+
+    override suspend fun isUserLoggedNow(): Boolean {
+        return db.appAuthorizationDao().isLogged(true).isNotEmpty()
+    }
+
+    override suspend fun loadUserFromAppDb(): AppAuthorizationModel {
+        return db.appAuthorizationDao().isLogged(true).first()
+    }
+
+    override suspend fun logoutUser(user: AppAuthorizationModel) {
+        db.appAuthorizationDao().setLogout(user)
     }
 
 }

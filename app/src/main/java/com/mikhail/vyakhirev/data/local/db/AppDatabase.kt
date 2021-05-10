@@ -3,10 +3,7 @@ package com.mikhail.vyakhirev.data.local.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.mikhail.vyakhirev.data.model.FavoriteModel
-import com.mikhail.vyakhirev.data.model.PhotoItem
-import com.mikhail.vyakhirev.data.model.QueryStatModel
-import com.mikhail.vyakhirev.data.model.UserModel
+import com.mikhail.vyakhirev.data.model.*
 
 
 @Database(
@@ -15,8 +12,9 @@ import com.mikhail.vyakhirev.data.model.UserModel
         RemoteKeys::class,
         QueryStatModel::class,
         FavoriteModel::class,
+        AppAuthorizationModel::class,
         UserModel::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(AppTypeConverters::class)
@@ -26,4 +24,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun queryStatDao(): QueryStatDao
     abstract fun favoritesDao(): FavoritesDao
     abstract fun usersDao(): UsersDao
+    abstract fun appAuthorizationDao(): AppAuthorizationDao
 }

@@ -88,15 +88,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.account_menu, menu)
         accountIcon = menu?.findItem(R.id.account_icon)
+//        supportActionBar?.title = "Search photo"
 
 
 //        accountName = menu?.findItem(R.id.account_name)
 
-        viewModel.loadFbUserData()
-        viewModel.user.observe(this, {
-            supportActionBar?.title = "Search photo"
-            accountName?.title = it.name
-        })
+//        viewModel.loadFbUserData()
+//        viewModel.user.observe(this, {
+//            accountName?.title = it.name
+//            viewModel.loadFbUserData()
+//        })
         setupAccountButton()
         return super.onCreateOptionsMenu(menu)
     }
@@ -104,11 +105,23 @@ class MainActivity : AppCompatActivity() {
     private fun setupAccountButton() {
         val account = GoogleSignIn.getLastSignedInAccount(this)
 
+//        var logged = false
+//        viewModel.isLogged.observe(this,{
+//            if (it)
+//               logged = true
+//        })
+
+        viewModel.isMyAppLogin()
         accountIcon?.setOnMenuItemClickListener {
-            if (account != null && hasInternet(this)) {
+            if ((account != null && hasInternet(this)) ) {
                 navController.navigate(R.id.userDetailsFragment)
                 binding.bottomNav.visibility = View.GONE
-            } else {
+            } else if (viewModel.isLogged.value == true)
+            {
+                navController.navigate(R.id.userDetailsFragment)
+                binding.bottomNav.visibility = View.GONE
+            }
+            else {
                 navController.navigate(R.id.loginFragment)
                 binding.bottomNav.visibility = View.GONE
 //                binding.bottomNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
@@ -142,6 +155,10 @@ class MainActivity : AppCompatActivity() {
             ex.printStackTrace()
             null
         }
+
+    }
+
+    fun refreshToolbar(){
 
     }
 

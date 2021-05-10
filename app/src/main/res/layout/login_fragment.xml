@@ -1,154 +1,337 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bigPhotoFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/cardview_shadow_end_color"
-    >
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalGuideLine_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalGuideLine_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <ImageView
+        android:id="@+id/logoImg"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/horizontalGuideLine"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/app_name_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textAllCaps="true"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoImg" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/userNameTIL"
+        app:boxStrokeColor = "@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:paddingTop="16dp">
+        android:layout_marginStart="@dimen/margin_32dp"
+        android:layout_marginTop="@dimen/margin_32dp"
+        android:layout_marginEnd="@dimen/margin_32dp"
+        android:hint="@string/hint_username"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideLine_end"
+        app:layout_constraintStart_toStartOf="@id/verticalGuideLine_start"
+        app:layout_constraintTop_toTopOf="@+id/app_name_TV">
 
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="16dp"
-            app:srcCompat="@drawable/logo"
-              />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="32dp"
-            android:text="@string/app_name"
-            android:textAllCaps="true"
-            android:textSize="16sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/userEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_username">
+            android:textColor="@color/colorPrimary"
+            android:shadowColor="@color/colorPrimary"
+            android:outlineSpotShadowColor="@color/colorPrimary"
+            android:textColorLink="@color/colorPrimary"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_text_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_32dp"
+        android:layout_marginEnd="@dimen/margin_32dp"
+        android:hint="@string/hint_password"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideLine_end"
+        app:layout_constraintStart_toStartOf="@id/verticalGuideLine_start"
+        app:layout_constraintTop_toBottomOf="@+id/userNameTIL">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password_text_input"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_password"
-            app:errorEnabled="true">
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
-        </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/registration_btn"
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/verticalGuideLine_start"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:text="@string/registration_label"
+        app:layout_constraintTop_toTopOf="@id/login_Btn"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_16dp"
+        android:text="@string/button_login"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/password_text_input" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel_BTN"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="12dp"
+        android:text="@string/button_cancel"
+        app:layout_constraintRight_toLeftOf="@+id/login_Btn"
+        app:layout_constraintTop_toBottomOf="@+id/password_text_input" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/socialTwitterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_32dp"
+        android:layout_marginRight="@dimen/margin_16dp"
+        android:text="@string/twitter"
+        app:backgroundTint="@color/color_twitter"
+        app:icon="@drawable/twitter_logo_icon"
+        app:iconPadding="10dp"
+        app:iconSize="24dp"
+        app:layout_constraintRight_toLeftOf="@+id/socialFacebookButton"
+        app:layout_constraintStart_toStartOf="@id/verticalGuideLine_start"
+        app:layout_constraintTop_toBottomOf="@+id/cancel_BTN" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/socialFacebookButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_32dp"
+        android:text="@string/facebook"
+        app:backgroundTint="@color/color_facebook"
+        app:icon="@drawable/facebook_logo_icon"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        android:layout_marginStart="@dimen/margin_16dp"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideLine_end"
+        app:layout_constraintLeft_toRightOf="@+id/socialTwitterButton"
+        app:layout_constraintTop_toBottomOf="@+id/cancel_BTN" />
 
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/socialGithubButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/github"
+        app:backgroundTint="@color/color_github"
+        app:icon="@drawable/github_logo_icon"
+        app:iconPadding="15dp"
+        app:iconSize="30dp"
+        app:layout_constraintRight_toLeftOf="@+id/socialGoogleButton"
+        app:layout_constraintStart_toStartOf="@id/verticalGuideLine_start"
+        app:layout_constraintTop_toBottomOf="@+id/socialTwitterButton" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/margin_32dp"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:text="@string/button_login" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancel_button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_toStartOf="@id/next_button"
-                android:layout_toLeftOf="@id/next_button"
-                android:text="@string/button_cancel" />
-
-        </RelativeLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/socialGoogleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/google"
+        android:layout_marginStart="@dimen/margin_16dp"
+        app:backgroundTint="@color/color_google"
+        app:icon="@drawable/google_logo_icon"
+        app:iconPadding="15dp"
+        app:iconSize="24dp"
+        app:layout_constraintEnd_toEndOf="@id/verticalGuideLine_end"
+        app:layout_constraintLeft_toRightOf="@+id/socialGithubButton"
+        app:layout_constraintTop_toBottomOf="@+id/socialTwitterButton" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <LinearLayout
-            android:id="@+id/loginSocialLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_32dp"
-            android:orientation="horizontal">
+    <!--    <?xml version="1.0" encoding="utf-8"?>-->
+    <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@color/cardview_shadow_end_color"-->
+    <!--    >-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+    <!--<LinearLayout-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:clipChildren="false"-->
+    <!--    android:clipToPadding="false"-->
+    <!--    android:orientation="vertical"-->
+    <!--    android:padding="24dp"-->
+    <!--    android:paddingTop="16dp">-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/socialTwitterButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/twitter"
-                    app:backgroundTint="@color/color_twitter"
-                    app:icon="@drawable/twitter_logo_icon"
-                    app:iconPadding="10dp"
-                    app:iconSize="24dp" />
+    <!--    <ImageView-->
+    <!--        android:layout_width="64dp"-->
+    <!--        android:layout_height="64dp"-->
+    <!--        android:layout_gravity="center_horizontal"-->
+    <!--        android:layout_marginTop="48dp"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        app:srcCompat="@drawable/logo"-->
+    <!--        />-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/socialFacebookButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/facebook"
-                    app:backgroundTint="@color/color_facebook"
-                    app:icon="@drawable/facebook_logo_icon"
-                    app:iconSize="32dp" />
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="center_horizontal"-->
+    <!--        android:layout_marginBottom="32dp"-->
+    <!--        android:text="@string/app_name"-->
+    <!--        android:textAllCaps="true"-->
+    <!--        android:textSize="16sp" />-->
 
-            </LinearLayout>
+    <!--    <com.google.android.material.textfield.TextInputLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:hint="@string/hint_username">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:orientation="vertical">
+    <!--        <com.google.android.material.textfield.TextInputEditText-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:inputType="text"-->
+    <!--            android:maxLines="1" />-->
+    <!--    </com.google.android.material.textfield.TextInputLayout>-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/socialGithubButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/github"
-                    app:backgroundTint="@color/color_github"
-                    app:icon="@drawable/github_logo_icon"
-                    app:iconPadding="15dp"
-                    app:iconSize="30dp" />
+    <!--    <com.google.android.material.textfield.TextInputLayout-->
+    <!--        android:id="@+id/password_text_input"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:hint="@string/hint_password"-->
+    <!--        app:errorEnabled="true">-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/socialGoogleButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/google"
-                    app:backgroundTint="@color/color_google"
-                    app:icon="@drawable/google_logo_icon"
-                    app:iconSize="24dp" />
+    <!--        <com.google.android.material.textfield.TextInputEditText-->
+    <!--            android:id="@+id/password_edit_text"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:inputType="textPassword" />-->
+    <!--    </com.google.android.material.textfield.TextInputLayout>-->
 
-            </LinearLayout>
 
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    <!--    <RelativeLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_marginTop="@dimen/margin_32dp"-->
+    <!--        android:layout_height="wrap_content">-->
+
+    <!--        <com.google.android.material.button.MaterialButton-->
+    <!--            android:id="@+id/next_button"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentEnd="true"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:text="@string/button_login" />-->
+
+    <!--        <com.google.android.material.button.MaterialButton-->
+    <!--            android:id="@+id/cancel_button"-->
+    <!--            style="@style/Widget.MaterialComponents.Button.TextButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginEnd="12dp"-->
+    <!--            android:layout_marginRight="12dp"-->
+    <!--            android:layout_toStartOf="@id/next_button"-->
+    <!--            android:layout_toLeftOf="@id/next_button"-->
+    <!--            android:text="@string/button_cancel" />-->
+
+    <!--    </RelativeLayout>-->
+
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/loginSocialLayout"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="center_horizontal"-->
+    <!--        android:layout_marginTop="@dimen/margin_32dp"-->
+    <!--        android:orientation="horizontal">-->
+
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:orientation="vertical">-->
+
+    <!--            <com.google.android.material.button.MaterialButton-->
+    <!--                android:id="@+id/socialTwitterButton"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="@string/twitter"-->
+    <!--                app:backgroundTint="@color/color_twitter"-->
+    <!--                app:icon="@drawable/twitter_logo_icon"-->
+    <!--                app:iconPadding="10dp"-->
+    <!--                app:iconSize="24dp" />-->
+
+    <!--            <com.google.android.material.button.MaterialButton-->
+    <!--                android:id="@+id/socialFacebookButton"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="@string/facebook"-->
+    <!--                app:backgroundTint="@color/color_facebook"-->
+    <!--                app:icon="@drawable/facebook_logo_icon"-->
+    <!--                app:iconSize="32dp" />-->
+
+    <!--        </LinearLayout>-->
+
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="15dp"-->
+    <!--            android:orientation="vertical">-->
+
+    <!--            <com.google.android.material.button.MaterialButton-->
+    <!--                android:id="@+id/socialGithubButton"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="@string/github"-->
+    <!--                app:backgroundTint="@color/color_github"-->
+    <!--                app:icon="@drawable/github_logo_icon"-->
+    <!--                app:iconPadding="15dp"-->
+    <!--                app:iconSize="30dp" />-->
+
+    <!--            <com.google.android.material.button.MaterialButton-->
+    <!--                android:id="@+id/socialGoogleButton"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="@string/google"-->
+    <!--                app:backgroundTint="@color/color_google"-->
+    <!--                app:icon="@drawable/google_logo_icon"-->
+    <!--                app:iconSize="24dp" />-->
+
+    <!--        </LinearLayout>-->
+
+    <!--    </LinearLayout>-->
+    <!--</LinearLayout>-->
+    <!--</ScrollView>-->

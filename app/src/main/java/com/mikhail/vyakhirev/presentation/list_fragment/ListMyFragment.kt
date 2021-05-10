@@ -17,7 +17,6 @@ import com.mikhail.vyakhirev.databinding.ListFragmentBinding
 import com.mikhail.vyakhirev.presentation.adapters.ListAdapter
 import com.mikhail.vyakhirev.presentation.adapters.MyLoadStateAdapter
 import com.mikhail.vyakhirev.presentation.main_activity.MainActivity
-import com.mikhail.vyakhirev.presentation.settings_fragment.SettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -66,10 +65,14 @@ class ListMyFragment : Fragment() {
         })
 
         if (activity is MainActivity) {
-            var  mainActivity = activity as MainActivity
+            val  mainActivity = activity as MainActivity
             mainActivity.setBottomNavigationVisibility(View.VISIBLE)
+            mainActivity.supportActionBar?.apply {
+                title = getString(R.string.list_search_fragment_label)
+                setDisplayHomeAsUpEnabled(false)
+                setDisplayShowHomeEnabled(false)
+            }
         }
-
         binding!!.retryButton.setOnClickListener { adapter.retry() }
     }
 

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.mikhail.vyakhirev.R
 import com.mikhail.vyakhirev.databinding.FavoritesFragmentBinding
 import com.mikhail.vyakhirev.presentation.adapters.favor.FavoritesAdapter
 import com.mikhail.vyakhirev.presentation.list_fragment.ListMyFragmentDirections
@@ -43,6 +44,11 @@ class FavoritesFragment : Fragment() {
         if (activity is MainActivity) {
             val  mainActivity = activity as MainActivity
             mainActivity.setBottomNavigationVisibility(View.VISIBLE)
+            mainActivity.supportActionBar?.apply {
+                title = getString(R.string.favorites_fragment_label)
+                setDisplayHomeAsUpEnabled(false)
+                setDisplayShowHomeEnabled(false)
+            }
         }
     }
 

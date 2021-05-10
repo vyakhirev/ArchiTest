@@ -23,7 +23,6 @@ import com.mikhail.vyakhirev.utils.GOOGLE_PRIVATE_CLIENT_ID
 import com.mikhail.vyakhirev.utils.RC_GOOGLE_SIGN_IN_CODE
 import com.mikhail.vyakhirev.utils.await
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,18 +31,29 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    @ApplicationContext private val application: Context,
     private val firebaseAuth: FirebaseAuth,
     private val repository: Repository
 ) : ViewModel() {
 
-    val uiState: LiveData<AuthUiModel> get() = _uiState
+    private val _uiState = MutableLiveData<AuthUiModel>()
+    val uiState: LiveData<AuthUiModel> = _uiState
+
+
+    private val _isLogged = MutableLiveData<Event<Boolean>>()
+    val isLogged: LiveData<Event<Boolean>> = _isLogged
 
     private val _user = MutableLiveData<UserModel>()
     val user: LiveData<UserModel> = _user
 
-    private val resources = application.resources
-    private val _uiState = MutableLiveData<AuthUiModel>()
+
+    /////////////////////////// My login ////////////////////////////
+    fun myLogin(login: String, password: String) {
+        viewModelScope.launch {
+            _isLogged.value = Event(repository.isAccessGranted(login, password))
+
+        }
+    }
+    /////////////////////////// End of my login ////////////////////////////
 
     /////////////////////////// Firebase Facebook Authentication Starts ////////////////////////////
 
@@ -88,8 +98,7 @@ class LoginViewModel @Inject constructor(
                 if (it is Result.Success && it.data.user != null) {
                     emitUiState(success = true)
 //                    repository.saveAuthResult(authCredential.zza())
-                }
-               else
+                } else
                     emitUiState(success = true)
 //                else if (it is Result.Error) handleErrorStateForSignInCredential(
 //                    it.exception, AuthType.FACEBOOK
@@ -107,9 +116,10 @@ class LoginViewModel @Inject constructor(
         .requestIdToken(GOOGLE_PRIVATE_CLIENT_ID)
         .requestEmail()
         .build()
-    private val mGoogleSignClient by lazy {
-        GoogleSignIn.getClient(application, gso)
-    }
+
+//    private val mGoogleSignClient by lazy {
+//
+//    }
 
     private fun handleGoogleSignInResult(data: Intent) {
         viewModelScope.launch {
@@ -127,7 +137,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun googleSignIn() = mGoogleSignClient.signInIntent
+    fun googleSignIn(context: Context) = GoogleSignIn.getClient(context, gso).signInIntent
 
     //////////////////////// Firebase Google Authentication Ends ///////////////////////////////////
 
@@ -202,9 +212,9 @@ class LoginViewModel @Inject constructor(
                         linkProvider = Event(
                             it.data.signInMethods!! to MaterialDialogContent(
                                 R.string.select, null, R.string.user_collision, R.string.cancel,
-                                String.format(
-                                    resources.getString(R.string.auth_user_collision_message), email
-                                )
+//                                String.format(
+//                                    resources.getString(R.string.auth_user_collision_message), email
+//                                )
                             )
                         )
                     )
@@ -260,11 +270,10 @@ class LoginViewModel @Inject constructor(
     }
 
 
-
     fun loadUserData() {
         viewModelScope.launch {
-            var facebookToken = AccessToken.getCurrentAccessToken()
-            val request= GraphRequest.newMeRequest(facebookToken) { `object`, response ->
+            val facebookToken = AccessToken.getCurrentAccessToken()
+            val request = GraphRequest.newMeRequest(facebookToken) { `object`, response ->
                 try {
                     val id = `object`.getString("id")
                     _user.value = UserModel(
@@ -273,8 +282,8 @@ class LoginViewModel @Inject constructor(
                         "https://graph.facebook.com/$id/picture",
                         `object`.getString("email"), listOf()
                     )
-                    Log.d("Kan","User is:  ${`object`.getString("first_name")}")
-                    Log.d("Kan","User is:  ${_user.value}")
+                    Log.d("Kan", "User is:  ${`object`.getString("first_name")}")
+                    Log.d("Kan", "User is:  ${_user.value}")
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
