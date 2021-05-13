@@ -10,8 +10,8 @@ Room - база данных, FireBase - авторизация через ак�
 с использованием протокола OAuth.
 <h2>Скриншоты:</h2/<br>
   <p>
-  <image src="search_photo.png"> <image src="detail.png"> <image src="login_fragment.png"> <image src="facebook_login.png"> 
-    <image src="favorites.png"> 
+  <image src="search_photo.png"> <image src="login_fragment.png"> <image src="facebook_login.png"> 
+    <image src="favorites.png">  <image src="detail.png">
     </p>
      <br>
 
