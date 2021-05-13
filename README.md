@@ -4,6 +4,7 @@
 <h2>Скриншоты:</h2/<br>
   <p>
   <image src="search_photo.png"> <image src="login_fragment.png"> <image src="facebook_login.png"> 
+    <image src="detail.png"> <image src="favorites.png"> 
     </p>
      <br>
   <h2>Стэк технологий:<br></h2>
